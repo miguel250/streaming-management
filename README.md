@@ -14,12 +14,13 @@ using this server for displaying new followers while streaming.
 - [ ] Support notifications for new subscribers and bits donations
 - [ ] Alert when a subscriber or VIP joins the chat overlay
 - [ ] Add bot to handle commands
- - [ ] Enable or disable bot
- - [ ] Add permissions for who can use the command
- - [ ] Manage server configuration (turning off goals, turn emote overlay off/on)
- - [ ] Allow simple commands via configurations files
- - [ ] Support of what is happening today
+  - [ ] Enable or disable bot
+  - [ ] Add permissions for who can use the command
+  - [ ] Manage server configuration (turning off goals, turn emote overlay off/on)
+  - [ ] Allow simple commands via configurations files
+  - [ ] Support of what is happening today
 - [ ] Add logging to server
+- [ ] Manage OBS studio profile and scenes
 
 
 ## OS configurations
