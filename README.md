@@ -4,6 +4,24 @@ using obs. It includes a server to render all obs studio overlays and a few scen
 using this server for displaying new followers while streaming.
 
 
+# TODO
+
+- [ ] Document how to use overlay server
+- [ ] Github actions
+- [ ] Allow follower goal to be turned off
+- [ ] Add support for subscriber goals
+- [ ] Add new overlay for emotes use in chat
+- [ ] Support notifications for new subscribers and bits donations
+- [ ] Alert when a subscriber or VIP joins the chat overlay
+- [ ] Add bot to handle commands
+ - [ ] Enable or disable bot
+ - [ ] Add permissions for who can use the command
+ - [ ] Manage server configuration (turning off goals, turn emote overlay off/on)
+ - [ ] Allow simple commands via configurations files
+ - [ ] Support of what is happening today
+- [ ] Add logging to server
+
+
 ## OS configurations
 ### macOS Catalina
 * Import scenes and profile into OBS studio
