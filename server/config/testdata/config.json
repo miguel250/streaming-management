@@ -1,0 +1,6 @@
+{
+  "twitch": {
+    "client_id": "test_client_id",
+    "channel_id": "0001"
+  }
+}

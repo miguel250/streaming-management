@@ -1,0 +1,26 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script src="js/lottie.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Orbitron">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/basic.css">
+    <link rel="stylesheet" href="css/standby.css">
+  </head>
+  <body>
+    <main>
+      <section class="title">
+        <h1>Please Stand By</h1>
+      </section>
+      <div id="coffee"></div>
+    </main>
+    <script src="js/animation.js"></script>
+    <script>
+      const elem = document.getElementById("coffee")
+      Animation(elem, "animation/coffee.json");
+    </script>
+  </body>
+</html>

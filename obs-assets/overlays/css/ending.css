@@ -1,0 +1,13 @@
+main {
+  display: flex;
+  color: var(--primary-color);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 0 10px #FFFFFF, 2px 2px 2px rgba(227,251,129,0);
+  height: 50vh;
+}
+
+.title {
+  height: 120px;
+}

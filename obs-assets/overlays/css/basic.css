@@ -1,0 +1,29 @@
+h1 {
+  font-family: var(--title-font);
+  font-size: 72px;
+}
+
+h2 {
+  font-family: var(--title-font);
+  font-size: 56px;
+}
+
+h3 {
+  font-family: var(--title-font);
+  font-size: 56px;
+}
+
+h3 {
+  font-family: var(--title-font);
+  font-size: 48px;
+}
+
+p {
+  font-family: var(--text-font);
+}
+
+body {
+  background-color: var(--background-color);
+}
+
+

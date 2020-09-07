@@ -1,0 +1,42 @@
+.timer {
+  font-family: "Orbitron";
+  color: var(--primary-color);
+  display: inline-flex;
+  height: 130px;
+}
+
+.pop {
+  animation-duration: 1s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: normal;
+  animation-fill-mode: both;
+  animation-play-state: running;
+  animation-name: count;
+  display: inline-block;
+}
+
+@keyframes count {
+  50% {
+    transform: scale(1.5);
+  }
+}
+
+main {
+  display: flex;
+  color: var(--primary-color);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 0 10px #FFFFFF, 2px 2px 2px rgba(227,251,129,0);
+  height: 100vh;
+}
+
+.title {
+ height: 120px;
+}
+
+#astronaut {
+  height: 200px;
+}
+

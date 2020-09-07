@@ -1,0 +1,65 @@
+body {
+  width: 100%;
+  margin: 0px auto;
+  height: 60px;
+}
+
+header {
+  display: flex;
+  color: white;
+  font-family: var(--text-font);
+  font-size: 32px;
+  flex-direction: row;
+  padding-top: 5px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+header span:not(:first-child) {
+  margin-left: 18px;
+}
+
+.twitter:before {
+  content: '';
+  background-color: white;
+  height: 24px;
+  width: 28px;
+  vertical-align: -11%;
+  -webkit-mask:  url(../images/twitter.svg) no-repeat 50% 50%;
+  mask: url(../images/twitter.svg) no-repeat 50% 50%;
+  -webkit-mask-size: cover;
+  mask-size: cover;
+  margin-right: 4px;
+}
+
+.twitch:before {
+  content: url(../images/twitch.svg);
+  width: 40px;
+  vertical-align: -30%;
+  margin-right: 2px;
+}
+
+.github:before {
+  content: url(../images/github.svg);
+  width: 32px;
+  vertical-align: -20%;
+  margin-right: 6px;
+}
+
+.social span:before {
+  display: inline-block;
+}
+
+.project_command{
+  margin: 0 auto;
+}
+
+.goals div {
+  display: inline;
+  margin-right: 10px
+}
+
+.counter, .new_follower_name {
+  font-family: var(--title-font);
+}
+

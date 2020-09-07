@@ -1,0 +1,18 @@
+{
+  "twitch": {
+    "follower_goal_total": 100,
+    "client_id": "",
+    "channel_id": "",
+    "api_url": "https://api.twitch.tv",
+    "badges_url": "https://badges.twitch.tv",
+    "emote": {
+      "url": "https://api.twitchemotes.com"
+    },
+    "irc": {
+      "auth": "",
+      "url": "irc.chat.twitch.tv:6667",
+      "name": "",
+      "channel": ""
+    }
+  }
+}

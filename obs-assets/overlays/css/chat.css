@@ -1,0 +1,53 @@
+.message {
+  font-size: 44px;
+  display: inline-block;
+}
+
+.box {
+  background-color: rgba(155, 131, 251,0.55);
+  opacity: 0.8;
+  width: auto;
+  max-width: 600px;
+  max-height: 100vh;
+  border-radius: 16px;
+  word-wrap: break-word;
+  padding: 16px;
+  margin: 8px;
+  box-shadow: 5px 5px 5px black;
+  animation: 4s slidein;
+  transition: all 1s ease-out;
+}
+
+.box-hide {
+  opacity: 0;
+  margin: 0;
+  padding: 0;
+  max-height: 0;
+}
+
+@keyframes slidein {
+  from {  transform: translateX(800px);}
+  to   { transform: translateX(0px); }
+}
+
+.username {
+  font-size: 30px;
+}
+
+.username span {
+  margin-right: 12px;
+}
+
+img.badge {
+  margin-right: 12px;
+}
+
+.profile-image {
+  display: inline-block;
+  margin-right: 16px;
+}
+
+.profile-image img {
+  height: 80px;
+  width: 80px;
+}

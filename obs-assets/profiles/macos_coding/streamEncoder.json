@@ -1,0 +1,6 @@
+{
+    "bitrate": 4000,
+    "profile": "main",
+    "tune": "zerolatency",
+    "use_bufsize": false
+}

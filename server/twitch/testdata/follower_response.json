@@ -1,0 +1,20 @@
+{
+    "_total": 23,
+    "_cursor": "1597163710055545989",
+    "follows": [
+        {
+            "created_at": "2020-08-11T16:35:10Z",
+            "notifications": true,
+            "user": {
+                "display_name": "angelicahill95",
+                "_id": "565688138",
+                "name": "angelicahill95",
+                "type": "user",
+                "bio": null,
+                "created_at": "2020-08-11T16:34:47.0298Z",
+                "updated_at": "2020-08-11T16:35:04.884008Z",
+                "logo": "https://static-cdn.jtvnw.net/user-default-pictures-uv/294c98b5-e34d-42cd-a8f0-140b72fba9b0-profile_image-300x300.png"
+            }
+        }
+    ]
+}

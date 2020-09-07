@@ -1,0 +1,50 @@
+body {
+  background-color: transparent;
+}
+
+.new-follower {
+  height: 120px;
+  font-family: var(--title-font);
+  font-size: 20px;
+  visibility: hidden;
+}
+
+main {
+  height: 400px;
+  width: 400px;
+}
+
+.show {
+  animation: color-me-in;
+  animation-duration: 25s;
+}
+
+@keyframes color-me-in {
+  0% {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(0, 0);
+  }
+  10% {
+    transform: translate(0, 125px);
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(0, 125px);
+  }
+}
+
+.message {
+  color: #2F4861;
+}
+
+.display-name {
+  color: #FBC383;
+}
+
+.gif {
+  display: block;
+  height: 100px;
+}

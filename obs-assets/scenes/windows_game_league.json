@@ -1,0 +1,468 @@
+{
+    "AuxAudioDevice1": {
+        "balance": 0.5,
+        "deinterlace_field_order": 0,
+        "deinterlace_mode": 0,
+        "enabled": true,
+        "filters": [
+            {
+                "balance": 0.5,
+                "deinterlace_field_order": 0,
+                "deinterlace_mode": 0,
+                "enabled": true,
+                "flags": 0,
+                "hotkeys": {},
+                "id": "noise_suppress_filter",
+                "mixers": 255,
+                "monitoring_type": 0,
+                "muted": false,
+                "name": "Noise Suppression",
+                "prev_ver": 419430408,
+                "private_settings": {},
+                "push-to-mute": false,
+                "push-to-mute-delay": 0,
+                "push-to-talk": false,
+                "push-to-talk-delay": 0,
+                "settings": {
+                    "suppress_level": -38
+                },
+                "sync": 0,
+                "versioned_id": "noise_suppress_filter",
+                "volume": 1.0
+            },
+            {
+                "balance": 0.5,
+                "deinterlace_field_order": 0,
+                "deinterlace_mode": 0,
+                "enabled": true,
+                "flags": 0,
+                "hotkeys": {},
+                "id": "noise_gate_filter",
+                "mixers": 255,
+                "monitoring_type": 0,
+                "muted": false,
+                "name": "Noise Gate",
+                "prev_ver": 419430408,
+                "private_settings": {},
+                "push-to-mute": false,
+                "push-to-mute-delay": 0,
+                "push-to-talk": false,
+                "push-to-talk-delay": 0,
+                "settings": {
+                    "close_threshold": -38.0,
+                    "open_threshold": -32.0
+                },
+                "sync": 0,
+                "versioned_id": "noise_gate_filter",
+                "volume": 1.0
+            }
+        ],
+        "flags": 0,
+        "hotkeys": {
+            "libobs.mute": [],
+            "libobs.push-to-mute": [],
+            "libobs.push-to-talk": [],
+            "libobs.unmute": []
+        },
+        "id": "wasapi_input_capture",
+        "mixers": 255,
+        "monitoring_type": 0,
+        "muted": false,
+        "name": "Headset",
+        "prev_ver": 419430408,
+        "private_settings": {},
+        "push-to-mute": false,
+        "push-to-mute-delay": 0,
+        "push-to-talk": false,
+        "push-to-talk-delay": 0,
+        "settings": {
+            "device_id": "{0.0.1.00000000}.{f3ad69d3-506f-4be9-b110-501e648bb328}",
+            "use_device_timing": false
+        },
+        "sync": 0,
+        "versioned_id": "wasapi_input_capture",
+        "volume": 1.0
+    },
+    "AuxAudioDevice2": {
+        "balance": 0.5,
+        "deinterlace_field_order": 0,
+        "deinterlace_mode": 0,
+        "enabled": true,
+        "flags": 0,
+        "hotkeys": {
+            "libobs.mute": [],
+            "libobs.push-to-mute": [],
+            "libobs.push-to-talk": [],
+            "libobs.unmute": []
+        },
+        "id": "wasapi_input_capture",
+        "mixers": 255,
+        "monitoring_type": 0,
+        "muted": false,
+        "name": "Voicemeter",
+        "prev_ver": 419430408,
+        "private_settings": {},
+        "push-to-mute": false,
+        "push-to-mute-delay": 0,
+        "push-to-talk": false,
+        "push-to-talk-delay": 0,
+        "settings": {
+            "device_id": "{0.0.1.00000000}.{41ec8b8b-efdb-4025-b300-8bf12cb9e90b}"
+        },
+        "sync": 0,
+        "versioned_id": "wasapi_input_capture",
+        "volume": 0.64530038833618164
+    },
+    "AuxAudioDevice3": {
+        "balance": 0.5,
+        "deinterlace_field_order": 0,
+        "deinterlace_mode": 0,
+        "enabled": true,
+        "flags": 0,
+        "hotkeys": {
+            "libobs.mute": [],
+            "libobs.push-to-mute": [],
+            "libobs.push-to-talk": [],
+            "libobs.unmute": []
+        },
+        "id": "wasapi_input_capture",
+        "mixers": 255,
+        "monitoring_type": 0,
+        "muted": false,
+        "name": "Music",
+        "prev_ver": 419430408,
+        "private_settings": {},
+        "push-to-mute": false,
+        "push-to-mute-delay": 0,
+        "push-to-talk": false,
+        "push-to-talk-delay": 0,
+        "settings": {
+            "device_id": "{0.0.1.00000000}.{56c84bcd-2f72-4505-adaf-cb4d32886b3a}"
+        },
+        "sync": 0,
+        "versioned_id": "wasapi_input_capture",
+        "volume": 1.0
+    },
+    "current_program_scene": "Main screen",
+    "current_scene": "Main screen",
+    "current_transition": "Fade",
+    "groups": [],
+    "modules": {
+        "auto-scene-switcher": {
+            "active": true,
+            "interval": 300,
+            "non_matching_scene": "Main screen",
+            "switch_if_not_matching": false,
+            "switches": [
+                {
+                    "scene": "Game Screen",
+                    "window_title": "League of Legends (TM) Client"
+                }
+            ]
+        },
+        "captions": {
+            "enabled": false,
+            "lang_id": 1033,
+            "provider": "mssapi",
+            "source": ""
+        },
+        "output-timer": {
+            "autoStartRecordTimer": false,
+            "autoStartStreamTimer": false,
+            "pauseRecordTimer": true,
+            "recordTimerHours": 0,
+            "recordTimerMinutes": 0,
+            "recordTimerSeconds": 30,
+            "streamTimerHours": 0,
+            "streamTimerMinutes": 0,
+            "streamTimerSeconds": 30
+        },
+        "scripts-tool": []
+    },
+    "name": "Win: League of Legends",
+    "preview_locked": false,
+    "quick_transitions": [
+        {
+            "duration": 300,
+            "fade_to_black": false,
+            "hotkeys": [],
+            "id": 1,
+            "name": "Cut"
+        },
+        {
+            "duration": 300,
+            "fade_to_black": false,
+            "hotkeys": [],
+            "id": 2,
+            "name": "Fade"
+        },
+        {
+            "duration": 300,
+            "fade_to_black": true,
+            "hotkeys": [],
+            "id": 3,
+            "name": "Fade"
+        }
+    ],
+    "saved_projectors": [],
+    "scaling_enabled": false,
+    "scaling_level": 0,
+    "scaling_off_x": 0.0,
+    "scaling_off_y": 0.0,
+    "scene_order": [
+        {
+            "name": "Main screen"
+        },
+        {
+            "name": "Game Screen"
+        }
+    ],
+    "sources": [
+        {
+            "balance": 0.5,
+            "deinterlace_field_order": 0,
+            "deinterlace_mode": 0,
+            "enabled": true,
+            "flags": 0,
+            "hotkeys": {},
+            "id": "window_capture",
+            "mixers": 0,
+            "monitoring_type": 0,
+            "muted": false,
+            "name": "League game",
+            "prev_ver": 419430408,
+            "private_settings": {},
+            "push-to-mute": false,
+            "push-to-mute-delay": 0,
+            "push-to-talk": false,
+            "push-to-talk-delay": 0,
+            "settings": {
+                "compatibility": false,
+                "priority": 1,
+                "window": "League of Legends (TM) Client:RiotWindowClass:League of Legends.exe"
+            },
+            "sync": 0,
+            "versioned_id": "window_capture",
+            "volume": 1.0
+        },
+        {
+            "balance": 0.5,
+            "deinterlace_field_order": 0,
+            "deinterlace_mode": 0,
+            "enabled": true,
+            "flags": 0,
+            "hotkeys": {
+                "OBSBasic.SelectScene": [
+                    {
+                        "control": true,
+                        "key": "OBS_KEY_3",
+                        "shift": true
+                    }
+                ],
+                "libobs.hide_scene_item.League game": [],
+                "libobs.show_scene_item.League game": []
+            },
+            "id": "scene",
+            "mixers": 0,
+            "monitoring_type": 0,
+            "muted": false,
+            "name": "Game Screen",
+            "prev_ver": 419430408,
+            "private_settings": {},
+            "push-to-mute": false,
+            "push-to-mute-delay": 0,
+            "push-to-talk": false,
+            "push-to-talk-delay": 0,
+            "settings": {
+                "custom_size": false,
+                "id_counter": 3,
+                "items": [
+                    {
+                        "align": 5,
+                        "bounds": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "bounds_align": 0,
+                        "bounds_type": 0,
+                        "crop_bottom": 0,
+                        "crop_left": 0,
+                        "crop_right": 0,
+                        "crop_top": 0,
+                        "group_item_backup": false,
+                        "id": 1,
+                        "locked": false,
+                        "name": "League game",
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "private_settings": {},
+                        "rot": 0.0,
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "scale_filter": "disable",
+                        "visible": true
+                    }
+                ]
+            },
+            "sync": 0,
+            "versioned_id": "scene",
+            "volume": 1.0
+        },
+        {
+            "balance": 0.5,
+            "deinterlace_field_order": 0,
+            "deinterlace_mode": 0,
+            "enabled": true,
+            "flags": 0,
+            "hotkeys": {
+                "OBSBasic.SelectScene": [
+                    {
+                        "control": true,
+                        "key": "OBS_KEY_2",
+                        "shift": true
+                    }
+                ],
+                "libobs.hide_scene_item.Image": [],
+                "libobs.hide_scene_item.League Client": [],
+                "libobs.show_scene_item.Image": [],
+                "libobs.show_scene_item.League Client": []
+            },
+            "id": "scene",
+            "mixers": 0,
+            "monitoring_type": 0,
+            "muted": false,
+            "name": "Main screen",
+            "prev_ver": 419430408,
+            "private_settings": {},
+            "push-to-mute": false,
+            "push-to-mute-delay": 0,
+            "push-to-talk": false,
+            "push-to-talk-delay": 0,
+            "settings": {
+                "custom_size": false,
+                "id_counter": 3,
+                "items": [
+                    {
+                        "align": 5,
+                        "bounds": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "bounds_align": 0,
+                        "bounds_type": 0,
+                        "crop_bottom": 0,
+                        "crop_left": 0,
+                        "crop_right": 0,
+                        "crop_top": 0,
+                        "group_item_backup": false,
+                        "id": 3,
+                        "locked": false,
+                        "name": "Image",
+                        "pos": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "private_settings": {},
+                        "rot": 0.0,
+                        "scale": {
+                            "x": 2.8125,
+                            "y": 2.7841269969940186
+                        },
+                        "scale_filter": "disable",
+                        "visible": true
+                    },
+                    {
+                        "align": 5,
+                        "bounds": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "bounds_align": 0,
+                        "bounds_type": 0,
+                        "crop_bottom": 0,
+                        "crop_left": 0,
+                        "crop_right": 0,
+                        "crop_top": 0,
+                        "group_item_backup": false,
+                        "id": 1,
+                        "locked": false,
+                        "name": "League Client",
+                        "pos": {
+                            "x": 421.0,
+                            "y": 277.0
+                        },
+                        "private_settings": {},
+                        "rot": 0.0,
+                        "scale": {
+                            "x": 0.78802084922790527,
+                            "y": 0.78796297311782837
+                        },
+                        "scale_filter": "disable",
+                        "visible": true
+                    }
+                ]
+            },
+            "sync": 0,
+            "versioned_id": "scene",
+            "volume": 1.0
+        },
+        {
+            "balance": 0.5,
+            "deinterlace_field_order": 0,
+            "deinterlace_mode": 0,
+            "enabled": true,
+            "flags": 0,
+            "hotkeys": {},
+            "id": "window_capture",
+            "mixers": 0,
+            "monitoring_type": 0,
+            "muted": false,
+            "name": "League Client",
+            "prev_ver": 419430408,
+            "private_settings": {},
+            "push-to-mute": false,
+            "push-to-mute-delay": 0,
+            "push-to-talk": false,
+            "push-to-talk-delay": 0,
+            "settings": {
+                "compatibility": false,
+                "priority": 1,
+                "window": "League of Legends:RCLIENT:LeagueClientUx.exe"
+            },
+            "sync": 0,
+            "versioned_id": "window_capture",
+            "volume": 1.0
+        },
+        {
+            "balance": 0.5,
+            "deinterlace_field_order": 0,
+            "deinterlace_mode": 0,
+            "enabled": true,
+            "flags": 0,
+            "hotkeys": {},
+            "id": "image_source",
+            "mixers": 0,
+            "monitoring_type": 0,
+            "muted": false,
+            "name": "Image",
+            "prev_ver": 419430408,
+            "private_settings": {},
+            "push-to-mute": false,
+            "push-to-mute-delay": 0,
+            "push-to-talk": false,
+            "push-to-talk-delay": 0,
+            "settings": {
+                "file": "assets/DgwazAh.jpg"
+            },
+            "sync": 0,
+            "versioned_id": "image_source",
+            "volume": 1.0
+        }
+    ],
+    "transition_duration": 450,
+    "transitions": []
+}
