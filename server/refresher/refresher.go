@@ -52,21 +52,21 @@ func (w *Worker) currentFollower() (*twitch.User, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Failed to get current followers")
 	}
-
-	if len(currentFollowers.Follows) >= 1 {
-		currentFollower := currentFollowers.Follows[0].User
-		currentFollowerID := currentFollower.ID
-
-		oldFollowerID, _ := w.cache.Get(cache.LastFollowerIDKey)
-
-		if oldFollowerID != currentFollowerID {
-			w.cache.Set(cache.LastFollowerNameKey, currentFollower.DisplayName)
-			w.cache.Set(cache.LastFollowerIDKey, currentFollowerID)
-			w.cache.Set(cache.TotalFollowerKey, strconv.Itoa(currentFollowers.Total))
-			return &currentFollower, nil
-		}
+	if len(currentFollowers.Follows) == 0 {
+		return nil, nil
 	}
 
+	currentFollower := currentFollowers.Follows[0].User
+	currentFollowerID := currentFollower.ID
+
+	oldFollowerID, _ := w.cache.Get(cache.LastFollowerIDKey)
+
+	if oldFollowerID != currentFollowerID {
+		w.cache.Set(cache.LastFollowerNameKey, currentFollower.DisplayName)
+		w.cache.Set(cache.LastFollowerIDKey, currentFollowerID)
+		w.cache.Set(cache.TotalFollowerKey, strconv.Itoa(currentFollowers.Total))
+		return &currentFollower, nil
+	}
 	return nil, nil
 }
 
