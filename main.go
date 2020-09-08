@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -48,13 +47,13 @@ func main() {
 	globalBadges, err := apiClient.GetGlobalBadges()
 
 	if err != nil {
-		log.Fatalf("Faield to load badges for channel %s", err)
+		log.Fatalf("Failed to load badges for channel %s", err)
 	}
 
 	channelBadges, err := apiClient.Channel.GetBadges(conf.Twitch.ChannelID)
 
 	if err != nil {
-		log.Fatalf("Faield to load badges for channel %s", err)
+		log.Fatalf("Failed to load badges for channel %s", err)
 	}
 
 	for key, val := range channelBadges {
@@ -83,7 +82,7 @@ func main() {
 		log.Fatalf("Failed to connect to twitch server: %s", err)
 	}
 
-	fmt.Println("Chat auth")
+	log.Println("Chat auth")
 	chatClient.Start()
 	chatClient.Auth()
 
@@ -97,7 +96,7 @@ func main() {
 
 			b, err := json.Marshal(msg)
 			if err != nil {
-				fmt.Println("error:", err)
+				log.Println("error:", err)
 			}
 
 			e := stream.Message{
