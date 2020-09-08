@@ -34,7 +34,7 @@ func TestParallel(t *testing.T) {
 	wg.Add(100)
 
 	for i := 0; i < 100; i++ {
-		go func() {
+		go func(i int) {
 			<-start
 			key := fmt.Sprintf("key-%d", i)
 			value := fmt.Sprintf("value-%d", i)
@@ -51,7 +51,7 @@ func TestParallel(t *testing.T) {
 
 			}
 			wg.Done()
-		}()
+		}(i)
 	}
 
 	close(start)
