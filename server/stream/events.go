@@ -101,7 +101,6 @@ func (e *Event) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Add("Content-Type", "text/event-stream")
 
 	e.ClientConnect <- client
-	closeConnection := rw.(http.CloseNotifier).CloseNotify()
 	for {
 		select {
 		case message, ok := <-client:
@@ -114,7 +113,7 @@ func (e *Event) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 			fmt.Fprintf(rw, "data: %s\n", message.Text)
 			fmt.Fprint(rw, "\n")
 			rw.(http.Flusher).Flush()
-		case <-closeConnection:
+		case <-req.Context().Done():
 			if e.isRunning {
 				e.ClientDisconnect <- client
 			}
