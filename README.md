@@ -8,7 +8,7 @@ using this server for displaying new followers while streaming.
 
 - [ ] Document how to use overlay server
 - [ ] Github actions
-- [ ] Allow follower goal to be turned off
+- [X] Allow follower goal to be turned off
 - [ ] Add support for subscriber goals
 - [ ] Add new overlay for emotes use in chat
 - [ ] Support notifications for new subscribers and bits donations

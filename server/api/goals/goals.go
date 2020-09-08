@@ -18,12 +18,20 @@ func (api *Goals) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	cacheCount, _ := api.cache.Get(cache.TotalFollowerKey)
 	totalCount, _ := strconv.Atoi(cacheCount)
 	followerName, _ := api.cache.Get(cache.LastFollowerNameKey)
+	DisableFollowerGoal := false
+
+	if api.conf.Twitch.FollowerGoalTotal == 0 {
+		DisableFollowerGoal = true
+	}
 
 	response := struct {
-		FollowerName string `json:"follower_name"`
-		Goal         int    `json:"goal"`
-		Total        int    `json:"total"`
+		DisableFollowerGoal bool   `json:"disable_follower_goal"`
+		FollowerName        string `json:"follower_name"`
+		Goal                int    `json:"goal"`
+		Total               int    `json:"total"`
 	}{
+
+		DisableFollowerGoal,
 		followerName,
 		api.conf.Twitch.FollowerGoalTotal,
 		totalCount,
