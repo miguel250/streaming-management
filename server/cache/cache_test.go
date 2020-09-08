@@ -1,6 +1,10 @@
 package cache
 
-import "testing"
+import (
+	"fmt"
+	"sync"
+	"testing"
+)
 
 func TestGetSet(t *testing.T) {
 	wantKey := "Hello"
@@ -22,40 +26,34 @@ func TestGetSet(t *testing.T) {
 }
 
 func TestParallel(t *testing.T) {
-	wantKey := "Hello"
-	wantValue := "World"
-
-	wantKey2 := "HI"
-	wantValue2 := "twitch"
-
 	c := New()
 
-	done := make(chan bool)
+	start := make(chan struct{})
 
-	go func() {
-		c.Set(wantKey2, wantValue2)
-		value, err := c.Get(wantKey2)
+	var wg sync.WaitGroup
+	wg.Add(100)
 
-		if err != nil {
-			t.Errorf("Failed to get key %s with err %s", wantKey2, err)
-		}
+	for i := 0; i < 100; i++ {
+		go func() {
+			<-start
+			key := fmt.Sprintf("key-%d", i)
+			value := fmt.Sprintf("value-%d", i)
 
-		if value != wantValue2 {
-			t.Errorf("Value didn't match want: %s, got: %s", wantValue2, value)
-		}
-		done <- true
-	}()
+			c.Set(key, value)
+			actualValue, err := c.Get(key)
 
-	c.Set(wantKey, wantValue)
+			if err != nil {
+				t.Errorf("Failed to get key %s with err %s", key, err)
+			}
 
-	value, err := c.Get(wantKey)
+			if actualValue != value {
+				t.Errorf("Value didn't match want: %s, got: %s", value, actualValue)
 
-	if err != nil {
-		t.Fatalf("Failed to get key %s with err %s", wantKey, err)
+			}
+			wg.Done()
+		}()
 	}
 
-	if value != wantValue {
-		t.Fatalf("Value didn't match want: %s, got: %s", wantValue, value)
-	}
-	<-done
+	close(start)
+	wg.Wait()
 }
