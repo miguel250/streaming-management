@@ -41,18 +41,16 @@ func (c *Client) handleEmotes(parse *parser.Message) {
 			return
 		}
 
-		if err == nil {
-			for _, val := range data {
-				emoteURL := fmt.Sprintf("https://static-cdn.jtvnw.net/emoticons/v1/%d/2.0", val.ID)
-				e := &emote{
-					id:       strconv.Itoa(val.ID),
-					code:     val.Code,
-					imageURL: emoteURL,
-				}
-				c.Lock()
-				c.emotesCache[e.id] = e
-				c.Unlock()
+		for _, val := range data {
+			emoteURL := fmt.Sprintf("https://static-cdn.jtvnw.net/emoticons/v1/%d/2.0", val.ID)
+			e := &emote{
+				id:       strconv.Itoa(val.ID),
+				code:     val.Code,
+				imageURL: emoteURL,
 			}
+			c.Lock()
+			c.emotesCache[e.id] = e
+			c.Unlock()
 		}
 	}
 
