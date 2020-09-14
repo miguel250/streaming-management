@@ -14,13 +14,17 @@ type Config struct {
 }
 
 type Twitch struct {
-	FollowerGoalTotal int        `json:"follower_goal_total"`
-	ClientID          string     `json:"client_id"`
-	ChannelID         string     `json:"channel_id"`
-	APIURL            string     `json:"api_url"`
-	BadgesURL         string     `json:"badges_url"`
-	IRC               irc.Config `json:"irc"`
-	Emote             Emote      `json:"emote"`
+	SubscriberGoalTotal int        `json:"subscriber_goal_total"`
+	FollowerGoalTotal   int        `json:"follower_goal_total"`
+	ClientID            string     `json:"client_id"`
+	Secret              string     `json:"secret"`
+	ChannelID           string     `json:"channel_id"`
+	APIURL              string     `json:"api_url"`
+	AuthURL             string     `json:"auth_url"`
+	RedirectURL         string     `json:"redirect_url"`
+	BadgesURL           string     `json:"badges_url"`
+	IRC                 irc.Config `json:"irc"`
+	Emote               Emote      `json:"emote"`
 }
 
 type Emote struct {

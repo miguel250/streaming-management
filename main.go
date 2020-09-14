@@ -2,10 +2,12 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/miguel250/kuma/http/server"
+	"github.com/miguel250/streaming-setup/server/api/auth"
 	"github.com/miguel250/streaming-setup/server/api/goals"
 	"github.com/miguel250/streaming-setup/server/cache"
 	"github.com/miguel250/streaming-setup/server/config"
@@ -17,6 +19,7 @@ import (
 )
 
 func main() {
+
 	mux := http.NewServeMux()
 	fs := http.FileServer(http.Dir("obs-assets/overlays"))
 	mux.Handle("/overlays/", http.StripPrefix("/overlays", fs))
@@ -32,13 +35,30 @@ func main() {
 		log.Fatalf("Failed to load configuration file with %s", err)
 	}
 
-	twitchConf := &twitch.Config{
-		TwitchURL: conf.Twitch.APIURL,
-		BadgeURL:  conf.Twitch.BadgesURL,
-		ClientID:  conf.Twitch.ClientID,
+	srvConf := &server.Config{
+		Addr: "localhost",
+		Port: 8080,
 	}
 
-	apiClient, err := twitch.New(twitchConf)
+	srv := server.New(srvConf, mux)
+	err = srv.Start()
+	if err != nil {
+		log.Fatalf("Failed to start server with %s", err)
+	}
+
+	twitchConf := &twitch.Config{
+		AuthURL:     conf.Twitch.AuthURL,
+		TwitchURL:   conf.Twitch.APIURL,
+		RedirectURL: fmt.Sprintf("%s/api/auth", srv.Addr),
+		BadgeURL:    conf.Twitch.BadgesURL,
+		ClientID:    conf.Twitch.ClientID,
+		Secret:      conf.Twitch.Secret,
+	}
+
+	c := cache.New()
+	apiClient, err := twitch.New(twitchConf, c)
+
+	fmt.Println(apiClient.AuthURL())
 
 	if err != nil {
 		log.Fatalf("Failed to create Twitch API client with %s", err)
@@ -60,12 +80,11 @@ func main() {
 		globalBadges[key] = val
 	}
 
-	c := cache.New()
-
 	worker := refresher.New(conf, c, apiClient, event)
 	worker.Refresher()
 
 	mux.Handle("/api/goals", goals.New(conf, c))
+	mux.Handle("/api/auth", auth.New(conf, apiClient, c))
 	emotesAPI, err := twitchemotes.New(conf.Twitch.Emote.URL)
 
 	if err != nil {
@@ -108,11 +127,5 @@ func main() {
 		}
 	}()
 
-	srvConf := &server.Config{
-		Addr: "localhost",
-		Port: 8080,
-	}
-
-	srv := server.New(srvConf, mux)
 	srv.StartAndWait()
 }

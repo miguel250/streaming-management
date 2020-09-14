@@ -1,0 +1,23 @@
+{
+    "_total": 13,
+    "subscriptions": [
+        {
+            "created_at": "2020-09-05T02:04:32Z",
+            "_id": "f62a9cd4bc6965e218c8bf2a4feb84a3594f16a4",
+            "sub_plan": "1000",
+            "sub_plan_name": "Channel Subscription (miguelcodetv)",
+            "is_gift": false,
+            "user": {
+                "display_name": "williamconnelly",
+                "type": "user",
+                "bio": "",
+                "created_at": "2018-03-04T00:40:21Z",
+                "updated_at": "2020-08-27T18:00:59Z",
+                "name": "williamconnelly",
+                "_id": "202015635",
+                "logo": "https://static-cdn.jtvnw.net/user-default-pictures-uv/998f01ae-def8-11e9-b95c-784f43822e80-profile_image-300x300.png"
+            },
+            "sender": null
+        }
+    ]
+}

@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"testing"
 
+	"github.com/miguel250/streaming-setup/server/cache"
 	"github.com/miguel250/streaming-setup/server/twitch"
 	"github.com/miguel250/streaming-setup/server/twitch/util"
 )
@@ -19,7 +20,7 @@ func TestInvalidURL(t *testing.T) {
 		TwitchURL: "::////super_invalid_url",
 		BadgeURL:  "::////super_invalid_url",
 		ClientID:  "client-id",
-	})
+	}, cache.New())
 
 	if err == nil {
 		t.Error("we are expecting an url parsing error here")
@@ -29,7 +30,7 @@ func TestInvalidURL(t *testing.T) {
 		TwitchURL: "invalid_url",
 		BadgeURL:  "::////super_invalid_url",
 		ClientID:  "client-id",
-	})
+	}, cache.New())
 
 	if err == nil {
 		t.Error("we are expecting an url parsing error here")
@@ -82,6 +83,60 @@ func TestTwitchChannel(t *testing.T) {
 	}
 }
 
+func TestSubscriptionChannel(t *testing.T) {
+	channeID := "558843277"
+	testEndpoint := fmt.Sprintf("/kraken/channels/%s/subscriptions", channeID)
+
+	for _, test := range []struct {
+		name        string
+		wantHeaders map[string]string
+		expiredAt   int64
+	}{
+		{
+			"valid token",
+			map[string]string{
+				"Authorization": "OAuth test_access_token",
+			},
+			3600,
+		},
+		{
+			"refresh token",
+			map[string]string{
+				"Authorization": "OAuth asdfasdf",
+			},
+			-900,
+		},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			api, ts := util.TestCreateClientAuth(t, "subscriptions_response", testEndpoint, channeID, test.wantHeaders, test.expiredAt)
+			defer ts.Close()
+
+			data, err := api.Channel.Subscribers(channeID, 1)
+
+			if err != nil {
+				t.Fatalf("Failed to %v", err)
+			}
+
+			if len(data.Subscriptions) != 1 {
+				t.Fatalf("Followers is not equal to 1, got: %d", len(data.Subscriptions))
+			}
+
+			subscriber := data.Subscriptions[0]
+			wantFollowerID := "202015635"
+
+			if subscriber.User.ID != wantFollowerID {
+				t.Errorf("Follower ID don't match, want: %s got: %s", wantFollowerID, subscriber.User.ID)
+			}
+
+			wantDisplayName := "williamconnelly"
+
+			if subscriber.User.DisplayName != wantDisplayName {
+				t.Errorf("Follower DisplayName don't match, want: %s got: %s", wantDisplayName, subscriber.User.DisplayName)
+			}
+		})
+	}
+}
+
 func TestChannelGetBadges(t *testing.T) {
 	channeID := "558843277"
 	testEndpoint := fmt.Sprintf("/v1/badges/channels/%s/display", channeID)
@@ -120,12 +175,15 @@ func TestBadRequest(t *testing.T) {
 	ts := util.TestServer(clientID, endpoint, "user_response", t)
 
 	conf := &twitch.Config{
-		TwitchURL: ts.URL,
-		ClientID:  "test",
-		BadgeURL:  ts.URL,
+		TwitchURL:   ts.URL,
+		Secret:      "not_really_secret",
+		ClientID:    "test",
+		BadgeURL:    ts.URL,
+		AuthURL:     ts.URL,
+		RedirectURL: ts.URL,
 	}
 
-	api, err := twitch.New(conf)
+	api, err := twitch.New(conf, cache.New())
 
 	if err != nil {
 		t.Fatalf("Failed to create API struct %v", err)
@@ -136,6 +194,58 @@ func TestBadRequest(t *testing.T) {
 	if err == nil {
 		t.Error("expected an error but didn't get one")
 	}
+}
+
+func TestAuthUser(t *testing.T) {
+	testEndpoint := "/oauth2/token"
+	code := "394a8bc98028f39660e53025de824134fb46313"
+	queryParams := map[string]string{
+		"client_id":     "test_client_id",
+		"client_secret": "nyo51xcdrerl8z9m56w9w6wg",
+		"code":          code,
+		"grant_type":    "authorization_code",
+		"redirect_uri":  "http://localhost/api/auth",
+	}
+	api, ts := util.TestCreateClientQueryParams(t, "auth_response", testEndpoint, "", queryParams, nil, 100)
+	defer ts.Close()
+
+	resp, err := api.AuthUser(code)
+
+	if err != nil {
+		t.Fatalf("Failed to get user access token with: %s", err)
+	}
+
+	if resp == nil {
+		t.Fatal("Response shouldn't be nil")
+	}
+
+	testCompareGoldenFiles("testdata/auth_token.json", resp, t)
+}
+
+func TestAuthTokenRefresh(t *testing.T) {
+	testEndpoint := "/oauth2/token"
+	code := "eyJfaWQmNzMtNGCJ9%6VFV5LNrZFUj8oU231/3Aj"
+	queryParams := map[string]string{
+		"client_id":     "test_client_id",
+		"client_secret": "nyo51xcdrerl8z9m56w9w6wg",
+		"refresh_token": code,
+		"grant_type":    "refresh_token",
+		"redirect_uri":  "http://localhost/api/auth",
+	}
+	api, ts := util.TestCreateClientQueryParams(t, "refresh_response", testEndpoint, "", queryParams, nil, 100)
+	defer ts.Close()
+
+	resp, err := api.AuthTokenRefresh(code)
+
+	if err != nil {
+		t.Fatalf("Failed to get user access token with: %s", err)
+	}
+
+	if resp == nil {
+		t.Fatal("Response shouldn't be nil")
+	}
+
+	testCompareGoldenFiles("testdata/refresh_token.json", resp, t)
 }
 
 func testCompareGoldenFiles(wantFilename string, v interface{}, t *testing.T) {
