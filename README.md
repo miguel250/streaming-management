@@ -21,6 +21,7 @@ using this server for displaying new followers while streaming.
   - [ ] Support of what is happening today
 - [ ] Add logging to server
 - [ ] Manage OBS studio profile and scenes
+- [ ] Make highlighted messages bigger and change colors
 
 
 ## OS configurations
