@@ -18,8 +18,9 @@ const (
 )
 
 type Event struct {
+	sync.RWMutex
 	Message          chan Message
-	clients          map[chan Message]bool
+	clients          map[chan Message]struct{}
 	ClientConnect    chan chan Message
 	ClientConnected  chan bool
 	ClientDisconnect chan chan Message
@@ -44,6 +45,8 @@ func (e *Event) Start() error {
 		return errors.New("Server is already running")
 	}
 
+	e.Lock()
+	defer e.Unlock()
 	e.isRunning = true
 	e.Once = sync.Once{}
 
@@ -59,13 +62,17 @@ func (e *Event) Start() error {
 			case <-e.ClientConnected:
 			case client, ok := <-e.ClientConnect:
 				if ok {
-					e.clients[client] = true
+					e.Lock()
+					e.clients[client] = struct{}{}
+					e.Unlock()
 					e.ClientConnected <- true
 				}
 			case client, ok := <-e.ClientDisconnect:
 				if ok {
+					e.Lock()
 					delete(e.clients, client)
 					close(client)
+					e.Unlock()
 				}
 			case <-e.shutdown:
 				e.Close()
@@ -81,6 +88,8 @@ func (e *Event) Close() {
 }
 
 func (e *Event) stop() {
+	e.Lock()
+	defer e.Unlock()
 	if e.isRunning {
 		e.isRunning = false
 		close(e.ClientConnect)
@@ -114,6 +123,8 @@ func (e *Event) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 			fmt.Fprint(rw, "\n")
 			rw.(http.Flusher).Flush()
 		case <-req.Context().Done():
+			e.RLock()
+			defer e.RUnlock()
 			if e.isRunning {
 				e.ClientDisconnect <- client
 			}
@@ -128,7 +139,7 @@ func New() *Event {
 
 	return &Event{
 		Message:          make(chan Message),
-		clients:          make(map[chan Message]bool),
+		clients:          make(map[chan Message]struct{}),
 		ClientConnect:    make(chan chan Message),
 		ClientConnected:  make(chan bool, 100),
 		ClientDisconnect: make(chan chan Message),
