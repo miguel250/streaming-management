@@ -10,29 +10,28 @@ func (sc *Scanner) scanWelcome(val *value, c rune) (token.Token, bool) {
 		case '1':
 			sc.next()
 			sc.startToken(val)
-			c = sc.next()
-			t := sc.scanSimpleMessage(val, c, token.WELCOME, false)
+			sc.next()
+			t := sc.scanSimpleMessage(val, token.WELCOME, false)
 			sc.ignoreSpace = true
 			return t, true
 		case '2':
 			sc.next()
 			sc.startToken(val)
-			c = sc.next()
-			t := sc.scanSimpleMessage(val, c, token.YOURHOST, false)
+			t := sc.scanSimpleMessage(val, token.YOURHOST, false)
 			sc.ignoreSpace = true
 			return t, true
 		case '3':
 			sc.next()
 			sc.startToken(val)
-			c = sc.next()
-			t := sc.scanSimpleMessage(val, c, token.SERVERCREATED, false)
+			sc.next()
+			t := sc.scanSimpleMessage(val, token.SERVERCREATED, false)
 			sc.ignoreSpace = true
 			return t, true
 		case '4':
 			sc.next()
 			sc.startToken(val)
 			c = sc.next()
-			t := sc.scanSimpleMessage(val, c, token.SERVERMYINFO, false)
+			t := sc.scanSimpleMessage(val, token.SERVERMYINFO, false)
 			sc.ignoreSpace = true
 			return t, true
 		}

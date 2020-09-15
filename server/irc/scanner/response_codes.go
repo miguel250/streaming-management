@@ -13,22 +13,22 @@ func (sc *Scanner) scanGeneralResponses(val *value, c rune) (token.Token, bool) 
 			case '5':
 				sc.next()
 				sc.startToken(val)
-				c = sc.next()
-				t := sc.scanSimpleMessage(val, c, token.MOTDSTART, false)
+				sc.next()
+				t := sc.scanSimpleMessage(val, token.MOTDSTART, false)
 				sc.ignoreSpace = true
 				return t, true
 			case '2':
 				sc.next()
 				sc.startToken(val)
-				c = sc.next()
-				t := sc.scanSimpleMessage(val, c, token.MOTD, false)
+				sc.next()
+				t := sc.scanSimpleMessage(val, token.MOTD, false)
 				sc.ignoreSpace = true
 				return t, true
 			case '6':
 				sc.next()
 				sc.startToken(val)
-				c = sc.next()
-				t := sc.scanSimpleMessage(val, c, token.MOTDEND, false)
+				sc.next()
+				t := sc.scanSimpleMessage(val, token.MOTDEND, false)
 				sc.ignoreSpace = true
 				return t, true
 			}

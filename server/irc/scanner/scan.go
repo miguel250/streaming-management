@@ -61,7 +61,7 @@ func (sc *Scanner) NextToken() (*value, token.Token) {
 	case '[':
 		sc.next()
 		sc.startToken(val)
-		return val, sc.scanSimpleMessage(val, c, token.LEFTSQUAREBRACKET, false)
+		return val, sc.scanSimpleMessage(val, token.LEFTSQUAREBRACKET, false)
 	case ']':
 		sc.next()
 		sc.startToken(val)
@@ -71,12 +71,12 @@ func (sc *Scanner) NextToken() (*value, token.Token) {
 		// hostname
 		sc.next()
 		sc.startToken(val)
-		return val, sc.scanSimpleMessage(val, c, token.EXCLAMATION, false)
+		return val, sc.scanSimpleMessage(val, token.EXCLAMATION, false)
 	case '#':
 		// Channel name
 		sc.next()
 		sc.startToken(val)
-		return val, sc.scanSimpleMessage(val, c, token.HASH, false)
+		return val, sc.scanSimpleMessage(val, token.HASH, false)
 	case 'J':
 		// JOIN
 		sc.moveForward(4)
@@ -87,7 +87,7 @@ func (sc *Scanner) NextToken() (*value, token.Token) {
 		// Message value
 		sc.next()
 		sc.startToken(val)
-		return val, sc.scanSimpleMessage(val, c, token.COLON, sc.ignoreSpace)
+		return val, sc.scanSimpleMessage(val, token.COLON, sc.ignoreSpace)
 	case 'G':
 		sc.moveForward(len("GLOBALUSERSTATE"))
 		sc.startToken(val)
@@ -185,9 +185,9 @@ func (sc *Scanner) moveForward(n int) rune {
 	return c
 }
 
-func (sc *Scanner) scanSimpleMessage(val *value, c rune, t token.Token, ignoreSpace bool) token.Token {
+func (sc *Scanner) scanSimpleMessage(val *value, t token.Token, ignoreSpace bool) token.Token {
 	for {
-		c, _ = sc.peak()
+		c, _ := sc.peak()
 
 		if (!ignoreSpace && (c == ' ' || c == '!' || c == ']')) || c == 0 {
 			break
