@@ -1,5 +1,6 @@
 package twitch
 
+//TODO: Add timeout to http clients to prevent requests blocking forever
 import (
 	"encoding/json"
 	"fmt"

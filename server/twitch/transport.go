@@ -29,6 +29,8 @@ func (t *transport) RoundTrip(req *http.Request) (*http.Response, error) {
 }
 
 func (t *transport) token() (string, error) {
+	t.Lock()
+	defer t.Unlock()
 	expiresAtStr, err := t.cache.Get(cache.UserAccessExpiresAt)
 	if err != nil {
 		return "", err
