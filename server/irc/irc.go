@@ -38,16 +38,19 @@ var commandToString = map[chatCommand]string{
 
 type Client struct {
 	sync.RWMutex
+	connMutex    sync.RWMutex
 	conf         *Config
 	conn         net.Conn
 	close        chan bool
 	OnCap        chan *parser.Message
-	OnMessage    chan *Message
+	onMessages   []chan *Message
+	OnReconnect  chan bool
 	twitchEmotes *twitchemotes.API
 	twitchClient *twitch.API
 	badges       map[string]*twitch.BadgeVersion
 	currentUsers map[string]*user
 	emotesCache  map[string]*emote
+	reader       *textproto.Reader
 }
 
 type Message struct {
@@ -70,23 +73,17 @@ type emote struct {
 }
 
 func (c *Client) Start() error {
-	conn, err := net.Dial("tcp", c.conf.URL)
-
+	err := c.connect()
 	if err != nil {
-		return fmt.Errorf("Failed to create connection with %w", err)
+		return err
 	}
-
-	c.conn = conn
-
-	reader := bufio.NewReader(c.conn)
-	tp := textproto.NewReader(reader)
 
 	go func() {
 		for {
-			line, err := tp.ReadLine()
+			line, err := c.reader.ReadLine()
 
 			if err != nil && err == io.EOF {
-				fmt.Println("Connection was closed")
+				log.Println("Connection was closed")
 				return
 			}
 
@@ -97,12 +94,20 @@ func (c *Client) Start() error {
 			parse, err := parser.ParseMsg(line)
 
 			if err != nil {
-				fmt.Printf("Failed to parse message with %s\n", err)
+				log.Printf("Failed to parse message with %s\n", err)
 			}
 
 			switch parse.Command {
 			case token.CAP:
 				c.OnCap <- parse
+			case token.RECONNECT:
+				err := c.connect()
+				if err != nil {
+					log.Printf("failed to reconnect to server with: %s", err)
+					return
+				}
+
+				c.OnReconnect <- true
 			case token.PING:
 				c.Send(Pong, parse.Message)
 			case token.PRIVMSG:
@@ -153,16 +158,50 @@ func (c *Client) Start() error {
 					ProfileImage: profileImage,
 					Channel:      parse.Channel,
 				}
-				c.OnMessage <- msg
+
+				for _, channel := range c.onMessages {
+					channel <- msg
+				}
 			}
 		}
 	}()
 	return nil
 }
 
+func (c *Client) connect() error {
+	c.connMutex.Lock()
+	defer c.connMutex.Unlock()
+
+	conn, err := net.Dial("tcp", c.conf.URL)
+	if err != nil {
+		return fmt.Errorf("failed to create connection with %w", err)
+	}
+
+	if c.conn != nil {
+		c.conn.Close()
+	}
+
+	c.conn = conn
+	reader := bufio.NewReader(c.conn)
+	c.reader = textproto.NewReader(reader)
+
+	return nil
+}
+
 func (c *Client) Close() error {
+	c.connMutex.Lock()
+	defer c.connMutex.Unlock()
+
 	if c.conn == nil {
 		return errors.New("client is not started yet")
+	}
+
+	c.Lock()
+	defer c.Unlock()
+
+	// close all on message channels
+	for _, channel := range c.onMessages {
+		close(channel)
 	}
 	return c.conn.Close()
 }
@@ -211,12 +250,27 @@ func (c *Client) capabilities() error {
 	return nil
 }
 
+func (c *Client) SendMessage(msg string) error {
+	return c.Send(PrivMsg, fmt.Sprintf("%s :%s", c.conf.Channel, msg))
+}
+
+func (c *Client) MessageListener() chan *Message {
+	channel := make(chan *Message)
+	c.Lock()
+	defer c.Unlock()
+	c.onMessages = append(c.onMessages, channel)
+	return channel
+}
+
 func (c *Client) Send(command chatCommand, message string) error {
 	commandString, ok := commandToString[command]
 
 	if !ok {
 		return fmt.Errorf("unknown command %v", command)
 	}
+
+	c.connMutex.Lock()
+	defer c.connMutex.Unlock()
 
 	if c.conn == nil {
 		return errors.New("client is not started yet")
@@ -239,7 +293,8 @@ func New(conf *Config) (*Client, error) {
 	return &Client{
 		conf:         conf,
 		OnCap:        make(chan *parser.Message, 100),
-		OnMessage:    make(chan *Message, 100),
+		onMessages:   make([]chan *Message, 0, 10),
+		OnReconnect:  make(chan bool, 10),
 		twitchEmotes: conf.TwitchEmotes,
 		twitchClient: conf.TwitchAPI,
 		badges:       conf.Badges,

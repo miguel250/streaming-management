@@ -18,6 +18,14 @@ func TestParseMsg(t *testing.T) {
 		tags     map[string]string
 	}{
 		{
+			":tmi.twitch.tv RECONNECT",
+			"",
+			"",
+			"",
+			token.RECONNECT,
+			map[string]string{},
+		},
+		{
 			":<user>!<user>@<user>.tmi.twitch.tv PRIVMSG #<channel> :This is a sample message",
 			"<channel>",
 			"This is a sample message",

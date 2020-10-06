@@ -12,6 +12,8 @@ func TestScanner(t *testing.T) {
 	for _, test := range []struct {
 		input, want string
 	}{
+		// issue: #9
+		{":tmi.twitch.tv RECONNECT", "colon tmi.twitch.tv whitespace reconnect"},
 		{":tmi.twitch.tv CAP * ACK :twitch.tv/membership", "colon tmi.twitch.tv whitespace cap whitespace asterisk whitespace ack whitespace colon twitch.tv/membership"},
 		{":tmi.twitch.tv CAP * ACK :twitch.tv/tags", "colon tmi.twitch.tv whitespace cap whitespace asterisk whitespace ack whitespace colon twitch.tv/tags"},
 		{":tmi.twitch.tv 001 <user> :Welcome, GLHF!", "colon tmi.twitch.tv whitespace welcome <user> whitespace colon Welcome, GLHF!"},

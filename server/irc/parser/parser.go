@@ -251,6 +251,7 @@ func ParseMsg(msg string) (*Message, error) {
 		resultMsg.parseSimpleCommands(token.GLOBALUSERSTATE)
 		resultMsg.parseSimpleCommandWithChannel(token.USERSTATE)
 		resultMsg.parseSimpleCommandWithChannel(token.USERNOTICE)
+		resultMsg.parseSimpleCommandWithChannel(token.RECONNECT)
 
 		val, err = resultMsg.next()
 
