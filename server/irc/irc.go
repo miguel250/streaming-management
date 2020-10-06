@@ -43,6 +43,7 @@ type Client struct {
 	conn         net.Conn
 	close        chan bool
 	OnCap        chan *parser.Message
+	OnMessage    chan *Message
 	onMessages   []chan *Message
 	OnReconnect  chan bool
 	twitchEmotes *twitchemotes.API
@@ -159,8 +160,18 @@ func (c *Client) Start() error {
 					Channel:      parse.Channel,
 				}
 
+				select {
+				case c.OnMessage <- msg:
+				default:
+					log.Println("no message sent")
+				}
+
 				for _, channel := range c.onMessages {
-					channel <- msg
+					select {
+					case channel <- msg:
+					default:
+						log.Println("no message sent")
+					}
 				}
 			}
 		}
