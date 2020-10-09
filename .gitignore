@@ -3,5 +3,5 @@ streaming-setup
 streaming_config.json
 server/irc/bot/
 server/irc/commands
-server/irc/current_working.txt
+build/
 
