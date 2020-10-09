@@ -1,0 +1,17 @@
+name: Linter
+on: pull_request
+jobs:
+  linter:
+    name: Run linter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '^1.15.2'
+      - name: Run linter
+        run: |
+          go get github.com/golangci/golangci-lint/cmd/golangci-lint
+          golangci-lint run
