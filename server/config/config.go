@@ -9,7 +9,6 @@ import (
 )
 
 type Config struct {
-	path   string
 	Twitch *Twitch `json:"twitch"`
 }
 

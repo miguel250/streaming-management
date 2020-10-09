@@ -8,7 +8,10 @@ import (
 
 func TestEvent(t *testing.T) {
 	event := New()
-	event.Start()
+	err := event.Start()
+	if err != nil {
+		t.Fatalf("failed to start event server %s", err)
+	}
 
 	server := httptest.NewServer(event)
 	defer server.Close()

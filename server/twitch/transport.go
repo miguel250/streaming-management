@@ -3,7 +3,6 @@ package twitch
 import (
 	"fmt"
 	"net/http"
-	"net/url"
 	"sync"
 	"time"
 
@@ -12,10 +11,9 @@ import (
 
 type transport struct {
 	sync.Mutex
-	baseURL *url.URL
-	api     *API
-	cache   *cache.Cache
-	tr      http.RoundTripper
+	api   *API
+	cache *cache.Cache
+	tr    http.RoundTripper
 }
 
 func (t *transport) RoundTrip(req *http.Request) (*http.Response, error) {

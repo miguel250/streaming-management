@@ -26,7 +26,11 @@ func main() {
 
 	event := stream.New()
 	mux.Handle("/events", event)
-	event.Start()
+	err := event.Start()
+	if err != nil {
+		log.Fatalf("Failed to start event server with %s", err)
+	}
+
 	defer event.Close()
 
 	conf, err := config.New("streaming_config.json")
@@ -57,9 +61,6 @@ func main() {
 
 	c := cache.New()
 	apiClient, err := twitch.New(twitchConf, c)
-
-	fmt.Println(apiClient.AuthURL())
-
 	if err != nil {
 		log.Fatalf("Failed to create Twitch API client with %s", err)
 	}
@@ -96,14 +97,20 @@ func main() {
 	ircConf.TwitchAPI = apiClient
 	ircConf.TwitchEmotes = emotesAPI
 	chatClient, err := irc.New(&ircConf)
-
 	if err != nil {
 		log.Fatalf("Failed to connect to twitch server: %s", err)
 	}
 
+	err = chatClient.Start()
+	if err != nil {
+		log.Fatalf("Failed to connect to Twitch chat server with %s", err)
+	}
+
 	log.Println("Chat auth")
-	chatClient.Start()
-	chatClient.Auth()
+	err = chatClient.Auth()
+	if err != nil {
+		log.Fatalf("Failed to auth against Twitch chat server with %s", err)
+	}
 
 	go func() {
 		for {
@@ -127,5 +134,7 @@ func main() {
 		}
 	}()
 
-	srv.StartAndWait()
+	if err := srv.StartAndWait(); err != nil {
+		log.Fatalf("http server failed with %s", err)
+	}
 }

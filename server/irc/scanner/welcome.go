@@ -30,7 +30,7 @@ func (sc *Scanner) scanWelcome(val *value, c rune) (token.Token, bool) {
 		case '4':
 			sc.next()
 			sc.startToken(val)
-			c = sc.next()
+			sc.next()
 			t := sc.scanSimpleMessage(val, token.SERVERMYINFO, false)
 			sc.ignoreSpace = true
 			return t, true
