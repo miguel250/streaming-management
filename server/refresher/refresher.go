@@ -69,7 +69,10 @@ func (w *Worker) apiAuthSuccess() bool {
 			}
 			url := w.client.AuthURL()
 			cmd := exec.Command(commands[0], append(commands[1:], url)...)
-			cmd.Start()
+			err := cmd.Start()
+			if err != nil {
+				log.Printf("failed to run command with %s", err)
+			}
 			log.Printf("Please go to %s to authenticate your twitch account", url)
 		})
 		return false

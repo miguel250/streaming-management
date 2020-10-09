@@ -67,7 +67,11 @@ func TestPrivMsgWithBadges(t *testing.T) {
 
 			chatServerMock.setResponse(&buf)
 
-			client.Start()
+			err := client.Start()
+			if err != nil {
+				t.Fatalf("failed to start irc client with %s", err)
+			}
+
 			data := <-client.OnMessage
 
 			if data.DisplayName != test.displayName {
@@ -126,7 +130,11 @@ func TestPrivMsg(t *testing.T) {
 
 	chatServerMock.setResponse(&buf)
 
-	client.Start()
+	err := client.Start()
+	if err != nil {
+		t.Fatalf("failed to start irc client with %s", err)
+	}
+
 	data := <-client.OnMessage
 
 	wantDisplayname := "<user>"
@@ -147,9 +155,12 @@ func TestSimpleCap(t *testing.T) {
 
 	chatServerMock.setResponse(&buf)
 
-	client.Start()
-	err := client.Auth()
+	err := client.Start()
+	if err != nil {
+		t.Fatalf("failed to start irc client with %s", err)
+	}
 
+	err = client.Auth()
 	if err != nil {
 		t.Fatalf("Failed to auth with Twitch chat")
 	}

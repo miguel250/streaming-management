@@ -179,7 +179,10 @@ func (msg *Message) parsePrivateMessage() error {
 }
 
 func (msg *Message) parseSimpleCommandWithChannel(t token.Token) error {
-	msg.parseSimpleCommands(t)
+	err := msg.parseSimpleCommands(t)
+	if err != nil {
+		return err
+	}
 
 	if msg.Command == t {
 		for {
@@ -231,27 +234,65 @@ func ParseMsg(msg string) (*Message, error) {
 		scan:         scanner.NewScanner(msg),
 		Tags:         make(map[string]string),
 	}
-	val, err := resultMsg.next()
 
+	val, err := resultMsg.next()
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse message with %w", err)
 	}
 
 	for {
 
-		resultMsg.parseCap()
-		resultMsg.parsePing()
-		resultMsg.parseNameReply()
+		err := resultMsg.parseCap()
+		if err != nil {
+			return nil, err
+		}
 
-		resultMsg.parseTags()
+		err = resultMsg.parsePing()
+		if err != nil {
+			return nil, err
+		}
+
+		err = resultMsg.parseNameReply()
+		if err != nil {
+			return nil, err
+		}
+
+		err = resultMsg.parseTags()
+		if err != nil {
+			return nil, err
+		}
+
 		resultMsg.parseUsername(val)
-		resultMsg.parseJoin()
-		resultMsg.parsePrivateMessage()
 
-		resultMsg.parseSimpleCommands(token.GLOBALUSERSTATE)
-		resultMsg.parseSimpleCommandWithChannel(token.USERSTATE)
-		resultMsg.parseSimpleCommandWithChannel(token.USERNOTICE)
-		resultMsg.parseSimpleCommandWithChannel(token.RECONNECT)
+		err = resultMsg.parseJoin()
+		if err != nil {
+			return nil, err
+		}
+
+		err = resultMsg.parsePrivateMessage()
+		if err != nil {
+			return nil, err
+		}
+
+		err = resultMsg.parseSimpleCommands(token.GLOBALUSERSTATE)
+		if err != nil {
+			return nil, err
+		}
+
+		err = resultMsg.parseSimpleCommandWithChannel(token.USERSTATE)
+		if err != nil {
+			return nil, err
+		}
+
+		err = resultMsg.parseSimpleCommandWithChannel(token.USERNOTICE)
+		if err != nil {
+			return nil, err
+		}
+
+		err = resultMsg.parseSimpleCommandWithChannel(token.RECONNECT)
+		if err != nil {
+			return nil, err
+		}
 
 		val, err = resultMsg.next()
 

@@ -41,7 +41,6 @@ type Client struct {
 	connMutex    sync.RWMutex
 	conf         *Config
 	conn         net.Conn
-	close        chan bool
 	OnCap        chan *parser.Message
 	OnMessage    chan *Message
 	onMessages   []chan *Message
@@ -63,7 +62,6 @@ type Message struct {
 }
 
 type user struct {
-	displayName  string
 	profileImage string
 }
 
@@ -110,7 +108,10 @@ func (c *Client) Start() error {
 
 				c.OnReconnect <- true
 			case token.PING:
-				c.Send(Pong, parse.Message)
+				err := c.Send(Pong, parse.Message)
+				if err != nil {
+					log.Printf("failed to send pong command to server")
+				}
 			case token.PRIVMSG:
 				c.handleEmotes(parse)
 

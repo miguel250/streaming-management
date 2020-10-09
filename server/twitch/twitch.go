@@ -278,16 +278,6 @@ func (c *API) makeGetRequest(requestURL *url.URL, path string, query map[string]
 	})
 }
 
-func (c *API) makePostRequest(requestURL *url.URL, path string, query map[string]string, body io.Reader) (*http.Response, error) {
-	return c.handleRequest(&request{
-		method:      "POST",
-		path:        path,
-		url:         requestURL,
-		body:        body,
-		queryParams: query,
-	})
-}
-
 type request struct {
 	client      *http.Client
 	method      string

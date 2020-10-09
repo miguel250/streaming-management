@@ -2,6 +2,7 @@ package goals
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -53,7 +54,10 @@ func (api *Goals) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		totalSubscribers,
 	}
 
-	json.NewEncoder(rw).Encode(response)
+	if err := json.NewEncoder(rw).Encode(response); err != nil {
+		log.Printf("failed to encode json with %s", err)
+		http.Error(rw, "Server error", http.StatusInternalServerError)
+	}
 }
 
 func New(conf *config.Config, cache *cache.Cache) *Goals {

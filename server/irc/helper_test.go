@@ -70,12 +70,19 @@ func (e *echoServer) Start() {
 					e.RLock()
 					defer e.RUnlock()
 					if e.serverResponse == nil {
-						io.Copy(c, c)
+						_, err := io.Copy(c, c)
+						if err != nil {
+							e.t.Errorf("failed to copy data to connection")
+						}
+
 						c.Close()
 						return
 					}
 
-					io.Copy(c, e.serverResponse)
+					_, err := io.Copy(c, e.serverResponse)
+					if err != nil {
+						e.t.Errorf("failed to copy data to connection")
+					}
 				}(conn)
 			}
 		}
