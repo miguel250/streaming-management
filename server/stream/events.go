@@ -103,6 +103,14 @@ func (e *Event) stop() {
 	}
 }
 
+func (e *Event) Send(event EventType, msg string) {
+	message := Message{
+		Type: event,
+		Text: msg,
+	}
+	e.Message <- message
+}
+
 func (e *Event) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	client := make(chan Message)
 

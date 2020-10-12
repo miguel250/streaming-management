@@ -2,7 +2,7 @@ body {
   background-color: transparent;
 }
 
-.new-follower {
+.new-follower, .new-subscriber {
   height: 120px;
   font-family: var(--title-font);
   font-size: 20px;
@@ -40,11 +40,11 @@ main {
   color: #2F4861;
 }
 
-.display-name {
+.display-name, .sub-display-name {
   color: #FBC383;
 }
 
 .gif {
   display: block;
-  height: 100px;
+  height: 200px;
 }

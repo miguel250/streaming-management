@@ -9,7 +9,7 @@ using this server for displaying new followers while streaming.
 - [ ] Document how to use overlay server
 - [ ] Github actions
 - [X] Allow follower goal to be turned off
-- [ ] Add support for subscriber goals
+- [X] Add support for subscriber goals
 - [ ] Add new overlay for emotes use in chat
 - [ ] Support notifications for new subscribers and bits donations
 - [ ] Alert when a subscriber or VIP joins the chat overlay
@@ -22,6 +22,8 @@ using this server for displaying new followers while streaming.
 - [ ] Add logging to server
 - [ ] Manage OBS studio profile and scenes
 - [ ] Make highlighted messages bigger and change colors
+- [ ] Cache access token and refresh token to disk
+- [ ] Add example of adding commands
 
 
 ## OS configurations

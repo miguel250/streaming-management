@@ -9,7 +9,9 @@ import (
 	"github.com/miguel250/kuma/http/server"
 	"github.com/miguel250/streaming-setup/server/api/auth"
 	"github.com/miguel250/streaming-setup/server/api/goals"
+	"github.com/miguel250/streaming-setup/server/api/triggers"
 	"github.com/miguel250/streaming-setup/server/cache"
+	"github.com/miguel250/streaming-setup/server/chat/commands"
 	"github.com/miguel250/streaming-setup/server/config"
 	"github.com/miguel250/streaming-setup/server/irc"
 	"github.com/miguel250/streaming-setup/server/refresher"
@@ -86,6 +88,7 @@ func main() {
 
 	mux.Handle("/api/goals", goals.New(conf, c))
 	mux.Handle("/api/auth", auth.New(conf, apiClient, c))
+	mux.Handle("/api/triggers/", triggers.New(event, conf))
 	emotesAPI, err := twitchemotes.New(conf.Twitch.Emote.URL)
 
 	if err != nil {
@@ -112,9 +115,20 @@ func main() {
 		log.Fatalf("Failed to auth against Twitch chat server with %s", err)
 	}
 
+	commandConfig, err := commands.NewConfig("commands.json")
+	if err != nil {
+		log.Fatalf("Failed to load command configuration with %s", err)
+	}
+
+	cmd := commands.New(chatClient, commandConfig)
+	cmd.Start()
+	defer cmd.Close()
+
+	messageChannel := chatClient.MessageListener()
+
 	go func() {
 		for {
-			msg := <-chatClient.OnMessage
+			msg := <-messageChannel
 
 			if msg.DisplayName == conf.Twitch.IRC.Name {
 				continue

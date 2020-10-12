@@ -25,9 +25,9 @@ func (api *Goals) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		disableFollowerGoal = true
 	}
 
-	cacheTotalSubscribers := "0"
+	cacheTotalSubscribers, _ := api.cache.Get(cache.TotalSubscribersKey)
 	totalSubscribers, _ := strconv.Atoi(cacheTotalSubscribers)
-	subscriberName := ""
+	subscriberName, _ := api.cache.Get(cache.LastSubscribeNameKey)
 	disableSubscriberGoal := false
 
 	if api.conf.Twitch.SubscriberGoalTotal == 0 {
@@ -41,7 +41,7 @@ func (api *Goals) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		SubscriberName        string `json:"subscriber_name"`
 		FollowerGoal          int    `json:"follower_goal"`
 		FollowerTotal         int    `json:"follower_total"`
-		SubscriberGoal        int    `json:"subscribe_goal"`
+		SubscriberGoal        int    `json:"subscriber_goal"`
 		SubscriberTotal       int    `json:"subscriber_total"`
 	}{
 		disableSubscriberGoal,

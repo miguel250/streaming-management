@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	"github.com/miguel250/streaming-setup/server/chat/commands"
 	"github.com/miguel250/streaming-setup/server/irc"
 )
 
@@ -24,10 +25,16 @@ type Twitch struct {
 	BadgesURL           string     `json:"badges_url"`
 	IRC                 irc.Config `json:"irc"`
 	Emote               Emote      `json:"emote"`
+	Bot                 Bot        `json:"bot"`
 }
 
 type Emote struct {
 	URL string `json:"url"`
+}
+
+type Bot struct {
+	commands.Config
+	OnMessage bool `json:"working_on_message"`
 }
 
 func New(path string) (*Config, error) {

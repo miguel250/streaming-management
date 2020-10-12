@@ -1,24 +1,52 @@
 (async () => {
   const events = new EventSource("/events");
   const stack = []
-  const audioElem = document.body.getElementsByClassName("notification")[0];
+  const audioFollowElem = document.body.getElementsByClassName("notification")[0];
+  const audioSubscriberElem = document.body.getElementsByClassName("subscriber-audio")[0];
   events.addEventListener("new_follower", async (e) => {
-    stack.push(e.data);
+    const obj = {
+      displayName: e.data,
+      eventType: "new_follower",
+    }
+    stack.push(obj);
   });
+
+  events.addEventListener("new_subscriber", async (e) => {
+    const obj = {
+      displayName: e.data,
+      eventType: "new_subscriber",
+    }
+    stack.push(obj);
+  });
+
 
   const showNotification = () => {
     setTimeout(() => {
-      const displayName = stack.pop();
+      const obj = stack.pop();
+      let elem = null;
+      let displayNameElem;
+      let audioElem;
 
-      if (displayName) {
-        const elem = document.body.getElementsByClassName("new-follower")[0];
-        const displayNameElem = document.body.getElementsByClassName("display-name")[0];
+      if (obj && obj.displayName) {
+        if (obj.eventType === "new_follower") {
+          elem = document.body.getElementsByClassName("new-follower")[0];
+          displayNameElem = document.body.getElementsByClassName("display-name")[0];
+          audioElem = audioFollowElem;
+        }
 
+        if (obj.eventType === "new_subscriber") {
+          elem = document.body.getElementsByClassName("new-subscriber")[0];
+          displayNameElem = document.body.getElementsByClassName("sub-display-name")[0];
+          audioElem = audioSubscriberElem;
+        }
+      }
+
+      if (elem != null) {
         audioElem.pause();
         audioElem.volume = 1;
         audioElem.currentTime = 0;
         elem.classList.remove("show");
-        displayNameElem.innerText = displayName;
+        displayNameElem.innerText = obj.displayName;
         elem.classList.add("show");
 
         const newElem = elem.cloneNode(true);
@@ -29,6 +57,11 @@
     }, 10000);
   };
 
-  audioElem.volume = 0
-  audioElem.play().then(showNotification).catch(showNotification);
+  const loadAudio = () => {
+    audioSubscriberElem.volume = 0;
+    audioSubscriberElem.play().then(showNotification).catch(showNotification);
+  };
+
+  audioFollowElem.volume = 0;
+  audioFollowElem.play().then(loadAudio).catch(loadAudio);
 })()

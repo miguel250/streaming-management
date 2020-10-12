@@ -1,15 +1,11 @@
-package irc
+package irc_test
 
 import (
 	"bytes"
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"testing"
 
+	"github.com/miguel250/streaming-setup/server/irc/util"
 	"github.com/miguel250/streaming-setup/server/twitch"
-	twitch_util "github.com/miguel250/streaming-setup/server/twitch/util"
-	emote_util "github.com/miguel250/streaming-setup/server/twitchemotes/util"
 )
 
 func TestPrivMsgWithBadges(t *testing.T) {
@@ -61,18 +57,18 @@ func TestPrivMsgWithBadges(t *testing.T) {
 		},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			client, chatServerMock := createChatClient(t)
+			client, chatServerMock := util.CreateMockChatClient(t)
 			var buf bytes.Buffer
 			buf.WriteString(test.input)
 
-			chatServerMock.setResponse(&buf)
+			chatServerMock.SetResponse(&buf)
 
 			err := client.Start()
 			if err != nil {
 				t.Fatalf("failed to start irc client with %s", err)
 			}
 
-			data := <-client.OnMessage
+			data := <-client.MessageListener()
 
 			if data.DisplayName != test.displayName {
 				t.Errorf("Displayname doesn't match want: %s, got: %s", test.displayName, data.DisplayName)
@@ -122,20 +118,20 @@ func TestPrivMsgWithBadges(t *testing.T) {
 }
 
 func TestPrivMsg(t *testing.T) {
-	client, chatServerMock := createChatClient(t)
+	client, chatServerMock := util.CreateMockChatClient(t)
 	serverResponse := ":<user>!<user>@<user>.tmi.twitch.tv PRIVMSG #<channel> :This is a sample message"
 
 	var buf bytes.Buffer
 	buf.WriteString(serverResponse)
 
-	chatServerMock.setResponse(&buf)
+	chatServerMock.SetResponse(&buf)
 
 	err := client.Start()
 	if err != nil {
 		t.Fatalf("failed to start irc client with %s", err)
 	}
 
-	data := <-client.OnMessage
+	data := <-client.MessageListener()
 
 	wantDisplayname := "<user>"
 
@@ -147,13 +143,13 @@ func TestPrivMsg(t *testing.T) {
 
 func TestSimpleCap(t *testing.T) {
 
-	client, chatServerMock := createChatClient(t)
+	client, chatServerMock := util.CreateMockChatClient(t)
 	serverResponse := ":tmi.twitch.tv CAP * ACK :twitch.tv/membership\n:tmi.twitch.tv CAP * ACK :twitch.tv/tags\n:tmi.twitch.tv CAP * ACK :twitch.tv/commands"
 
 	var buf bytes.Buffer
 	buf.WriteString(serverResponse)
 
-	chatServerMock.setResponse(&buf)
+	chatServerMock.SetResponse(&buf)
 
 	err := client.Start()
 	if err != nil {
@@ -180,51 +176,18 @@ func TestSimpleCap(t *testing.T) {
 	}
 }
 
-func createChatClient(t *testing.T) (*Client, *echoServer) {
-	ts := testIRCEchoServer(t)
-	ts.Start()
+func TestReconnect(t *testing.T) {
+	client, chatServerMock := util.CreateMockChatClient(t)
+	serverResponse := ":tmi.twitch.tv RECONNECT"
 
-	channeID := "558843277"
-	testEndpoint := fmt.Sprintf("/kraken/users/%s", channeID)
-	api, twitchMockServer := twitch_util.TestCreateClient(t, "user_response", testEndpoint, channeID)
+	var buf bytes.Buffer
+	buf.WriteString(serverResponse)
 
-	b, err := ioutil.ReadFile("testdata/channel_badges_response.json")
+	chatServerMock.SetResponse(&buf)
+	client.Start()
+	isReconnecting := <-client.OnReconnect
 
-	if err != nil {
-		t.Fatalf("Failed to open badges files with %s", err)
+	if !isReconnecting {
+		t.Fatal("expecting connection to reconnect")
 	}
-
-	resp := &twitch.BadgesResponse{}
-
-	err = json.Unmarshal(b, resp)
-
-	if err != nil {
-		t.Fatalf("Failed to parse json file with %s", err)
-	}
-
-	twitchEmotesMockAPI := emote_util.TestCreateClient(t, "emote_response", []string{"303365132"})
-
-	conf := &Config{
-		Auth:         "test_auth_token",
-		URL:          ts.addr,
-		Name:         "test_account",
-		Channel:      "test_channel",
-		TwitchAPI:    api,
-		TwitchEmotes: twitchEmotesMockAPI,
-		Badges:       resp.BadgeSet,
-	}
-
-	client, err := New(conf)
-
-	if err != nil {
-		t.Fatalf("Failed to connect to test server with %s", err)
-	}
-
-	t.Cleanup(func() {
-		client.Close()
-		ts.Shutdown()
-		twitchMockServer.Close()
-	})
-
-	return client, ts
 }

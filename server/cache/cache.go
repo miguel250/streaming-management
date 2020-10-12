@@ -7,12 +7,15 @@ import (
 )
 
 const (
-	LastFollowerIDKey   = "last_follower_id"
-	TotalFollowerKey    = "total_followers"
-	LastFollowerNameKey = "last_follower_name"
-	UserAccessCode      = "user_access_code"
-	UserAccessExpiresAt = "user_access_expires_at"
-	UserRefreshCode     = "user_refresh_code"
+	LastFollowerIDKey    = "last_follower_id"
+	TotalFollowerKey     = "total_followers"
+	LastFollowerNameKey  = "last_follower_name"
+	LastSubscribeIDKey   = "last_subscriber_id"
+	LastSubscribeNameKey = "last_subscriber_name"
+	TotalSubscribersKey  = "total_subscribers"
+	UserAccessCode       = "user_access_code"
+	UserAccessExpiresAt  = "user_access_expires_at"
+	UserRefreshCode      = "user_refresh_code"
 )
 
 type Cache struct {

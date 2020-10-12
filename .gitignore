@@ -4,4 +4,4 @@ streaming_config.json
 server/irc/bot/
 server/irc/commands
 build/
-
+commands.json
