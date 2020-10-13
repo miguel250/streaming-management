@@ -90,11 +90,6 @@ func TestCommands(t *testing.T) {
 			defer os.Remove(tmpfile.Name())
 			test.config.path = tmpfile.Name()
 
-			commands := New(client, test.config)
-			commands.Start()
-			defer commands.Close()
-			client.Start()
-
 			b, err := ioutil.ReadFile(fmt.Sprintf("testdata/%s", test.inputFileName))
 			if err != nil {
 				t.Fatalf("Failed to run test with %s", err)
@@ -105,6 +100,12 @@ func TestCommands(t *testing.T) {
 			if err != nil {
 				t.Fatalf("Failed to unmarshal json with %s", err)
 			}
+
+			client.Start()
+
+			commands := New(client, test.config)
+			commands.Start()
+			defer commands.Close()
 
 			err = commands.parseMsg(msg)
 			if err != nil && test.errorMessage == "" {
