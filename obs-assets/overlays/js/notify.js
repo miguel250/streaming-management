@@ -22,36 +22,47 @@
 
   const showNotification = () => {
     setTimeout(() => {
-      const obj = stack.pop();
+      const obj = stack.shift();
       let elem = null;
       let displayNameElem;
-      let audioElem;
 
-      if (obj && obj.displayName) {
-        if (obj.eventType === "new_follower") {
-          elem = document.body.getElementsByClassName("new-follower")[0];
-          displayNameElem = document.body.getElementsByClassName("display-name")[0];
-          audioElem = audioFollowElem;
-        }
+      if (!obj) {
+        showNotification();
+        return
+      }
 
-        if (obj.eventType === "new_subscriber") {
-          elem = document.body.getElementsByClassName("new-subscriber")[0];
-          displayNameElem = document.body.getElementsByClassName("sub-display-name")[0];
-          audioElem = audioSubscriberElem;
-        }
+      if (obj.eventType === "new_follower") {
+        elem = document.body.getElementsByClassName("new-follower")[0];
+        displayNameElem = document.body.getElementsByClassName("display-name")[0];
+      }
+
+      if (obj.eventType === "new_subscriber") {
+        elem = document.body.getElementsByClassName("new-subscriber")[0];
+        displayNameElem = document.body.getElementsByClassName("sub-display-name")[0];
       }
 
       if (elem != null) {
-        audioElem.pause();
-        audioElem.volume = 1;
-        audioElem.currentTime = 0;
         elem.classList.remove("show");
         displayNameElem.innerText = obj.displayName;
         elem.classList.add("show");
 
         const newElem = elem.cloneNode(true);
         elem.parentNode.replaceChild(newElem, elem);
-        audioElem.play()
+        if (obj.eventType === "new_subscriber") {
+          audioSubscriberElem.currentTime = 0;
+          audioSubscriberElem.volume = 1;
+          audioSubscriberElem.play().then().catch(() => {
+            audioSubscriberElem.play();
+          });
+        }
+
+        if (obj.eventType === "new_follower") {
+          audioFollowElem.currentTime = 0;
+          audioFollowElem.volume = 1;
+          audioFollowElem.play().then().catch(() => {
+            audioFollowElem.play();
+          });
+        }
       }
       showNotification();
     }, 10000);
