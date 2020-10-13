@@ -193,7 +193,7 @@ func TestDynamicAddedCommand(t *testing.T) {
 
 	receiveMessages := <-msgChannel
 	fmt.Println(receiveMessages.Message)
-	testCompareGoldenFiles("testdata/discord_command_result.json", receiveMessages, t)
+	testCompareGoldenFiles("testdata/dynamic_discord_command_result.json", receiveMessages, t)
 }
 
 func testCompareGoldenFiles(wantFilename string, v interface{}, t *testing.T) {
