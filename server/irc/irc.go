@@ -43,7 +43,6 @@ type Client struct {
 	conf           *Config
 	conn           net.Conn
 	OnCap          chan *parser.Message
-	OnMessage      chan *Message
 	onMessages     []chan *Message
 	onClearMessage []chan *ClearMessage
 	OnReconnect    chan bool
@@ -190,11 +189,6 @@ func (c *Client) Start() error {
 					Channel:      parse.Channel,
 				}
 
-				select {
-				case c.OnMessage <- msg:
-				default:
-					log.Println("no message sent")
-				}
 				c.RLock()
 				for _, channel := range c.onMessages {
 					channel <- msg
