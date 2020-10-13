@@ -12,6 +12,8 @@ func TestScanner(t *testing.T) {
 	for _, test := range []struct {
 		input, want string
 	}{
+		// issue: #8
+		{"@login=zpapa2112017;room-id=;target-msg-id=eec7a15c-ad91-45ac-a0ce-c52a2e8c9b65;tmi-sent-ts=1600803187681 :tmi.twitch.tv CLEARMSG #miguelcodetv :In search of followers, primes and views?", "at tag login equal zpapa2112017 semicolon tag room-id equal semicolon tag target-msg-id equal eec7a15c-ad91-45ac-a0ce-c52a2e8c9b65 semicolon tag tmi-sent-ts equal 1600803187681 whitespace colon tmi.twitch.tv whitespace clear msg hash miguelcodetv whitespace colon In search of followers, primes and views?"},
 		// issue: #9
 		{":tmi.twitch.tv RECONNECT", "colon tmi.twitch.tv whitespace reconnect"},
 		{":tmi.twitch.tv CAP * ACK :twitch.tv/membership", "colon tmi.twitch.tv whitespace cap whitespace asterisk whitespace ack whitespace colon twitch.tv/membership"},

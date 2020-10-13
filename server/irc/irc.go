@@ -8,6 +8,7 @@ import (
 	"log"
 	"net"
 	"net/textproto"
+	"strconv"
 	"sync"
 
 	"github.com/miguel250/streaming-setup/server/irc/parser"
@@ -38,19 +39,20 @@ var commandToString = map[chatCommand]string{
 
 type Client struct {
 	sync.RWMutex
-	connMutex    sync.RWMutex
-	conf         *Config
-	conn         net.Conn
-	OnCap        chan *parser.Message
-	OnMessage    chan *Message
-	onMessages   []chan *Message
-	OnReconnect  chan bool
-	twitchEmotes *twitchemotes.API
-	twitchClient *twitch.API
-	badges       map[string]*twitch.BadgeVersion
-	currentUsers map[string]*user
-	emotesCache  map[string]*emote
-	reader       *textproto.Reader
+	connMutex      sync.RWMutex
+	conf           *Config
+	conn           net.Conn
+	OnCap          chan *parser.Message
+	OnMessage      chan *Message
+	onMessages     []chan *Message
+	onClearMessage []chan *ClearMessage
+	OnReconnect    chan bool
+	twitchEmotes   *twitchemotes.API
+	twitchClient   *twitch.API
+	badges         map[string]*twitch.BadgeVersion
+	currentUsers   map[string]*user
+	emotesCache    map[string]*emote
+	reader         *textproto.Reader
 }
 
 type Message struct {
@@ -59,6 +61,14 @@ type Message struct {
 	Message      string          `json:"message"`
 	ProfileImage string          `json:"profile_image"`
 	Channel      string          `json:"channel"`
+}
+
+type ClearMessage struct {
+	Message   string
+	UserLogin string
+	Channel   string
+	MessageID string
+	Timestamp int64
 }
 
 type user struct {
@@ -105,13 +115,32 @@ func (c *Client) Start() error {
 					log.Printf("failed to reconnect to server with: %s", err)
 					return
 				}
-
 				c.OnReconnect <- true
 			case token.PING:
 				err := c.Send(Pong, parse.Message)
 				if err != nil {
 					log.Printf("failed to send pong command to server")
 				}
+			case token.CLEARMSG:
+				msg := &ClearMessage{
+					Message:   parse.Message,
+					UserLogin: parse.Tags["login"],
+					Channel:   parse.Channel,
+					MessageID: parse.Tags["target-msg-id"],
+				}
+
+				if i, err := strconv.ParseInt(parse.Tags["tmi-sent-ts"], 10, 64); err == nil {
+					msg.Timestamp = i
+				}
+
+				c.RLock()
+				for _, channel := range c.onClearMessage {
+					select {
+					case channel <- msg:
+					default:
+					}
+				}
+				c.RUnlock()
 			case token.PRIVMSG:
 				c.handleEmotes(parse)
 
@@ -166,7 +195,7 @@ func (c *Client) Start() error {
 				default:
 					log.Println("no message sent")
 				}
-
+				c.RLock()
 				for _, channel := range c.onMessages {
 					select {
 					case channel <- msg:
@@ -174,6 +203,7 @@ func (c *Client) Start() error {
 						log.Println("no message sent")
 					}
 				}
+				c.RUnlock()
 			}
 		}
 	}()
@@ -189,11 +219,12 @@ func (c *Client) connect() error {
 		return fmt.Errorf("failed to create connection with %w", err)
 	}
 
-	if c.conn != nil {
-		c.conn.Close()
+	oldConn := c.conn
+	c.conn = conn
+	if oldConn != nil {
+		oldConn.Close()
 	}
 
-	c.conn = conn
 	reader := bufio.NewReader(c.conn)
 	c.reader = textproto.NewReader(reader)
 
@@ -274,6 +305,14 @@ func (c *Client) MessageListener() chan *Message {
 	return channel
 }
 
+func (c *Client) ClearMessageListener() chan *ClearMessage {
+	channel := make(chan *ClearMessage)
+	c.Lock()
+	defer c.Unlock()
+	c.onClearMessage = append(c.onClearMessage, channel)
+	return channel
+}
+
 func (c *Client) Send(command chatCommand, message string) error {
 	commandString, ok := commandToString[command]
 
@@ -303,14 +342,15 @@ func New(conf *Config) (*Client, error) {
 	}
 
 	return &Client{
-		conf:         conf,
-		OnCap:        make(chan *parser.Message, 100),
-		onMessages:   make([]chan *Message, 0, 10),
-		OnReconnect:  make(chan bool, 10),
-		twitchEmotes: conf.TwitchEmotes,
-		twitchClient: conf.TwitchAPI,
-		badges:       conf.Badges,
-		currentUsers: make(map[string]*user),
-		emotesCache:  make(map[string]*emote),
+		conf:           conf,
+		OnCap:          make(chan *parser.Message, 100),
+		onMessages:     make([]chan *Message, 0, 10),
+		onClearMessage: make([]chan *ClearMessage, 0, 10),
+		OnReconnect:    make(chan bool, 10),
+		twitchEmotes:   conf.TwitchEmotes,
+		twitchClient:   conf.TwitchAPI,
+		badges:         conf.Badges,
+		currentUsers:   make(map[string]*user),
+		emotesCache:    make(map[string]*emote),
 	}, nil
 }

@@ -182,12 +182,50 @@ func TestReconnect(t *testing.T) {
 
 	var buf bytes.Buffer
 	buf.WriteString(serverResponse)
-
 	chatServerMock.SetResponse(&buf)
-	client.Start()
+
+	err := client.Start()
+	if err != nil {
+		t.Fatalf("failed to start irc client with %s", err)
+	}
+
 	isReconnecting := <-client.OnReconnect
 
 	if !isReconnecting {
 		t.Fatal("expecting connection to reconnect")
 	}
+}
+
+func TestClearMsg(t *testing.T) {
+	client, chatServerMock := util.CreateMockChatClient(t)
+	msg := "@login=zpapa2112017;room-id=;target-msg-id=eec7a15c-ad91-45ac-a0ce-c52a2e8c9b65;tmi-sent-ts=1600803187681 :tmi.twitch.tv CLEARMSG #miguelcodetv :In search of followers, primes and views?"
+
+	var buf bytes.Buffer
+	buf.WriteString(msg)
+
+	chatServerMock.SetResponse(&buf)
+	client.Start()
+
+	clearMsg := <-client.ClearMessageListener()
+
+	wantChannel := "miguelcodetv"
+	if clearMsg.Channel != wantChannel {
+		t.Errorf("clear message channel don't match want: '%s', got: '%s'", wantChannel, clearMsg.Channel)
+	}
+
+	wantMessage := "In search of followers, primes and views?"
+	if clearMsg.Message != wantMessage {
+		t.Errorf("clear message don't match want: '%s', got: '%s'", wantMessage, clearMsg.Message)
+	}
+
+	wantLogin := "zpapa2112017"
+	if clearMsg.UserLogin != wantLogin {
+		t.Errorf("clear message login don't match want: '%s', got: '%s'", wantLogin, clearMsg.UserLogin)
+	}
+
+	var wantTimestamp int64 = 1600803187681
+	if clearMsg.Timestamp != wantTimestamp {
+		t.Errorf("clear message timestamp don't match want: '%d', got: '%d'", wantTimestamp, clearMsg.Timestamp)
+	}
+
 }

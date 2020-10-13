@@ -1,6 +1,8 @@
 package scanner
 
-import "github.com/miguel250/streaming-setup/server/irc/token"
+import (
+	"github.com/miguel250/streaming-setup/server/irc/token"
+)
 
 func (sc *Scanner) scanRunesStartingC(val *value, c rune) (token.Token, bool) {
 	if c == 'C' {
@@ -26,6 +28,7 @@ func (sc *Scanner) scanRunesStartingC(val *value, c rune) (token.Token, bool) {
 				sc.moveForward(3)
 				sc.startToken(val)
 				sc.endToken(val)
+				sc.ignoreSpace = true
 				return token.CLEARMSG, true
 			}
 		}

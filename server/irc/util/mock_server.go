@@ -2,7 +2,6 @@ package util
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"net"
 	"sync"
@@ -44,8 +43,6 @@ func (e *EchoServer) Start() {
 						c.Close()
 						return
 					}
-
-					fmt.Println(e.serverResponse.String())
 
 					io.Copy(c, e.serverResponse)
 				}(conn)

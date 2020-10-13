@@ -151,12 +151,15 @@ func (msg *Message) parseNameReply() error {
 }
 
 func (msg *Message) parsePrivateMessage() error {
-	if msg.currentToken == token.PRIVMSG {
-		msg.Command = token.PRIVMSG
+	return msg.parseMessage(token.PRIVMSG)
+}
+
+func (msg *Message) parseMessage(t token.Token) error {
+	if msg.currentToken == t {
+		msg.Command = t
 
 		for {
 			val, err := msg.next()
-
 			if err != nil {
 				return err
 			}
@@ -174,7 +177,6 @@ func (msg *Message) parsePrivateMessage() error {
 			}
 		}
 	}
-
 	return nil
 }
 
@@ -226,7 +228,7 @@ func (msg *Message) next() (string, error) {
 }
 
 // ParseMsg parses a chat message sent from the Twitch chat server
-// TODO: Add support for NOTICE, ROOMSTATE, RECONNECT, HOSTTARGET, CLEARMSG	and CLEARCHAT
+// TODO: Add support for NOTICE, ROOMSTATE, HOSTTARGET, and CLEARCHAT
 func ParseMsg(msg string) (*Message, error) {
 	resultMsg := &Message{
 		currentToken: -1,
@@ -290,6 +292,11 @@ func ParseMsg(msg string) (*Message, error) {
 		}
 
 		err = resultMsg.parseSimpleCommandWithChannel(token.RECONNECT)
+		if err != nil {
+			return nil, err
+		}
+
+		err = resultMsg.parseMessage(token.CLEARMSG)
 		if err != nil {
 			return nil, err
 		}

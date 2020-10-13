@@ -18,6 +18,19 @@ func TestParseMsg(t *testing.T) {
 		tags     map[string]string
 	}{
 		{
+			"@login=zpapa2112017;room-id=;target-msg-id=eec7a15c-ad91-45ac-a0ce-c52a2e8c9b65;tmi-sent-ts=1600803187681 :tmi.twitch.tv CLEARMSG #miguelcodetv :In search of followers, primes and views?",
+			"miguelcodetv",
+			"In search of followers, primes and views?",
+			"",
+			token.CLEARMSG,
+			map[string]string{
+				"login":         "zpapa2112017",
+				"room-id":       "",
+				"target-msg-id": "eec7a15c-ad91-45ac-a0ce-c52a2e8c9b65",
+				"tmi-sent-ts":   "1600803187681",
+			},
+		},
+		{
 			":tmi.twitch.tv RECONNECT",
 			"",
 			"",
