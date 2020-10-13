@@ -11,6 +11,7 @@ func (sc *Scanner) scanRunesStartingU(val *value, c rune) (token.Token, bool) {
 			sc.moveForward(6)
 			sc.startToken(val)
 			sc.endToken(val)
+			sc.ignoreSpace = true
 			return token.USERNOTICE, true
 		}
 

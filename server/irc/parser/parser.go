@@ -286,8 +286,11 @@ func ParseMsg(msg string) (*Message, error) {
 			return nil, err
 		}
 
-		err = resultMsg.parseSimpleCommandWithChannel(token.USERNOTICE)
+		err = resultMsg.parseMessage(token.USERNOTICE)
 		if err != nil {
+			if err == ErrEOF {
+				break
+			}
 			return nil, err
 		}
 

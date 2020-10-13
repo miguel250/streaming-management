@@ -197,11 +197,7 @@ func (c *Client) Start() error {
 				}
 				c.RLock()
 				for _, channel := range c.onMessages {
-					select {
-					case channel <- msg:
-					default:
-						log.Println("no message sent")
-					}
+					channel <- msg
 				}
 				c.RUnlock()
 			}
