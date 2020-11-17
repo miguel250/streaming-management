@@ -19,6 +19,16 @@ func TestParseMsg(t *testing.T) {
 		tags     map[string]string
 	}{
 		{
+			`:tmi.twitch.tv HOSTTARGET #hosting_channel :<channel> [<number-of-viewers>]`,
+			"hosting_channel",
+			"[<number-of-viewers>]",
+			"",
+			token.HOSTTARGET,
+			map[string]string{
+				"target_channel": "<channel>",
+			},
+		},
+		{
 			`@badge-info=founder/2;badges=moderator/1,founder/0,bits/100;color=;display-name=AttackKopter;emotes=;flags=;id=a1d91e60-ae2b-4730-a2b1-38c23145887d;login=attackkopter;mod=1;msg-id=resub;msg-param-cumulative-months=2;msg-param-months=0;msg-param-should-share-streak=1;msg-param-streak-months=2;msg-param-sub-plan-name=Channel\sSubscription\s(miguelcodetv);msg-param-sub-plan=Prime;msg-param-was-gifted=false;room-id=558843277;subscriber=1;system-msg=AttackKopter\ssubscribed\swith\sTwitch\sPrime.\sThey've\ssubscribed\sfor\s2\smonths,\scurrently\son\sa\s2\smonth\sstreak!;tmi-sent-ts=1601065308944;user-id=239246205;user-type=mod :tmi.twitch.tv USERNOTICE #miguelcodetv :guess what`,
 			"miguelcodetv",
 			"guess what",

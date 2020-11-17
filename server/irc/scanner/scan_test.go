@@ -12,6 +12,8 @@ func TestScanner(t *testing.T) {
 	for _, test := range []struct {
 		input, want string
 	}{
+		// issue #15
+		{`:tmi.twitch.tv HOSTTARGET #hosting_channel :<channel> [<number-of-viewers>]`, "colon tmi.twitch.tv whitespace host target hash hosting_channel whitespace colon <channel> [<number-of-viewers>]"},
 		// issue #10
 		{`@badge-info=founder/2;badges=moderator/1,founder/0,bits/100;color=;display-name=AttackKopter;emotes=;flags=;id=a1d91e60-ae2b-4730-a2b1-38c23145887d;login=attackkopter;mod=1;msg-id=resub;msg-param-cumulative-months=2;msg-param-months=0;msg-param-should-share-streak=1;msg-param-streak-months=2;msg-param-sub-plan-name=Channel\sSubscription\s(miguelcodetv);msg-param-sub-plan=Prime;msg-param-was-gifted=false;room-id=558843277;subscriber=1;system-msg=AttackKopter\ssubscribed\swith\sTwitch\sPrime.\sThey've\ssubscribed\sfor\s2\smonths,\scurrently\son\sa\s2\smonth\sstreak!;tmi-sent-ts=1601065308944;user-id=239246205;user-type=mod :tmi.twitch.tv USERNOTICE #miguelcodetv :guess what`, `at tag badge-info equal founder/2 semicolon tag badges equal moderator/1,founder/0,bits/100 semicolon tag color equal semicolon tag display-name equal AttackKopter semicolon tag emotes equal semicolon tag flags equal semicolon tag id equal a1d91e60-ae2b-4730-a2b1-38c23145887d semicolon tag login equal attackkopter semicolon tag mod equal 1 semicolon tag msg-id equal resub semicolon tag msg-param-cumulative-months equal 2 semicolon tag msg-param-months equal 0 semicolon tag msg-param-should-share-streak equal 1 semicolon tag msg-param-streak-months equal 2 semicolon tag msg-param-sub-plan-name equal Channel\sSubscription\s(miguelcodetv) semicolon tag msg-param-sub-plan equal Prime semicolon tag msg-param-was-gifted equal false semicolon tag room-id equal 558843277 semicolon tag subscriber equal 1 semicolon tag system-msg equal AttackKopter\ssubscribed\swith\sTwitch\sPrime.\sThey've\ssubscribed\sfor\s2\smonths,\scurrently\son\sa\s2\smonth\sstreak! semicolon tag tmi-sent-ts equal 1601065308944 semicolon tag user-id equal 239246205 semicolon tag user-type equal mod whitespace colon tmi.twitch.tv whitespace user notice hash miguelcodetv whitespace colon guess what`},
 		// issue: #8
@@ -36,8 +38,8 @@ func TestScanner(t *testing.T) {
 		{":tmi.twitch.tv CLEARCHAT #dallas", "colon tmi.twitch.tv whitespace clear chat hash dallas"},
 		{":tmi.twitch.tv CLEARCHAT #dallas :ronni", "colon tmi.twitch.tv whitespace clear chat hash dallas whitespace colon ronni"},
 		{":tmi.twitch.tv CLEARMSG #dallas :HeyGuys", "colon tmi.twitch.tv whitespace clear msg hash dallas whitespace colon HeyGuys"},
-		{":tmi.twitch.tv HOSTTARGET #hosting_channel :<channel> [1]", "colon tmi.twitch.tv whitespace host target hash hosting_channel whitespace colon <channel> whitespace [ 1 ]"},
-		{":tmi.twitch.tv HOSTTARGET #hosting_channel :- [1]", "colon tmi.twitch.tv whitespace host target hash hosting_channel whitespace colon - whitespace [ 1 ]"},
+		{":tmi.twitch.tv HOSTTARGET #hosting_channel :<channel> [1]", "colon tmi.twitch.tv whitespace host target hash hosting_channel whitespace colon <channel> [1]"},
+		{":tmi.twitch.tv HOSTTARGET #hosting_channel :- [1]", "colon tmi.twitch.tv whitespace host target hash hosting_channel whitespace colon - [1]"},
 		{":tmi.twitch.tv NOTICE #dallas :This room is no longer in slow mode.", "colon tmi.twitch.tv whitespace notice whitespace hash dallas whitespace colon This room is no longer in slow mode."},
 		{":tmi.twitch.tv ROOMSTATE #<channel>", "colon tmi.twitch.tv whitespace room state whitespace hash <channel>"},
 		{":tmi.twitch.tv USERNOTICE #<channel> :message", "colon tmi.twitch.tv whitespace user notice hash <channel> whitespace colon message"},

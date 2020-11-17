@@ -227,5 +227,22 @@ func TestClearMsg(t *testing.T) {
 	if clearMsg.Timestamp != wantTimestamp {
 		t.Errorf("clear message timestamp don't match want: '%d', got: '%d'", wantTimestamp, clearMsg.Timestamp)
 	}
+}
 
+func TestHostTarget(t *testing.T) {
+	client, chatServerMock := util.CreateMockChatClient(t)
+	msg := `:tmi.twitch.tv HOSTTARGET #hosting_channel :<channel> [<number-of-viewers>]`
+	var buf bytes.Buffer
+	buf.WriteString(msg)
+
+	chatServerMock.SetResponse(&buf)
+	err := client.Start()
+	if err != nil {
+		t.Fatalf("Failed to start server with %s", err)
+	}
+
+	<-client.OnHostTarget
+	if client.Connected {
+		t.Errorf("Client shouldn't be connect")
+	}
 }
