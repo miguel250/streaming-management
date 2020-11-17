@@ -38,6 +38,7 @@ var commandToString = map[chatCommand]string{
 }
 
 type Client struct {
+	Connected bool
 	sync.RWMutex
 	connMutex      sync.RWMutex
 	conf           *Config
@@ -45,6 +46,7 @@ type Client struct {
 	OnCap          chan *parser.Message
 	onMessages     []chan *Message
 	onClearMessage []chan *ClearMessage
+	OnHostTarget   chan struct{}
 	OnReconnect    chan bool
 	twitchEmotes   *twitchemotes.API
 	twitchClient   *twitch.API
@@ -120,6 +122,12 @@ func (c *Client) Start() error {
 				if err != nil {
 					log.Printf("failed to send pong command to server")
 				}
+			case token.HOSTTARGET:
+				log.Println("Hosting client is shutting down")
+				if err := c.Close(); err != nil {
+					log.Printf("failed to close IRC client with err %s", err)
+				}
+				c.OnHostTarget <- struct{}{}
 			case token.CLEARMSG:
 				msg := &ClearMessage{
 					Message:   parse.Message,
@@ -217,6 +225,7 @@ func (c *Client) connect() error {
 
 	reader := bufio.NewReader(c.conn)
 	c.reader = textproto.NewReader(reader)
+	c.Connected = true
 
 	return nil
 }
@@ -236,6 +245,7 @@ func (c *Client) Close() error {
 	for _, channel := range c.onMessages {
 		close(channel)
 	}
+	c.Connected = false
 	return c.conn.Close()
 }
 
@@ -337,6 +347,7 @@ func New(conf *Config) (*Client, error) {
 		onMessages:     make([]chan *Message, 0, 10),
 		onClearMessage: make([]chan *ClearMessage, 0, 10),
 		OnReconnect:    make(chan bool, 10),
+		OnHostTarget:   make(chan struct{}),
 		twitchEmotes:   conf.TwitchEmotes,
 		twitchClient:   conf.TwitchAPI,
 		badges:         conf.Badges,

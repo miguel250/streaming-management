@@ -108,6 +108,7 @@ func (sc *Scanner) NextToken() (*value, token.Token) {
 		sc.moveForward(11)
 		sc.startToken(val)
 		sc.endToken(val)
+		sc.ignoreSpace = true
 		return val, token.HOSTTARGET
 	case 'N':
 		// NOTICE

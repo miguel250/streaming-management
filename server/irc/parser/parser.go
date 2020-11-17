@@ -210,6 +210,39 @@ func (msg *Message) parseSimpleCommands(token token.Token) error {
 	return nil
 }
 
+func (msg *Message) parseHostTarget(t token.Token) error {
+	err := msg.parseSimpleCommands(t)
+	if err != nil {
+		return err
+	}
+	if msg.Command == token.HOSTTARGET {
+		for {
+			val, err := msg.next()
+			if err != nil && err.Error() == ErrEOF.Error() {
+				return nil
+			}
+			if err != nil {
+				return err
+			}
+
+			if msg.currentToken == token.HASH {
+				msg.Channel = val
+			}
+
+			if msg.currentToken == token.COLON {
+				content := strings.Split(val, " ")
+				size := len(content)
+				if size <= 1 {
+					return fmt.Errorf("failed to parse host target with invalid len (%d)", size)
+				}
+				msg.Tags["target_channel"] = content[0]
+				msg.Message = content[1]
+			}
+		}
+	}
+	return err
+}
+
 func (msg *Message) next() (string, error) {
 	if msg.currentToken != token.EOF {
 		val, t := msg.scan.NextToken()
@@ -282,6 +315,11 @@ func ParseMsg(msg string) (*Message, error) {
 		}
 
 		err = resultMsg.parseSimpleCommandWithChannel(token.USERSTATE)
+		if err != nil {
+			return nil, err
+		}
+
+		err = resultMsg.parseHostTarget(token.HOSTTARGET)
 		if err != nil {
 			return nil, err
 		}
